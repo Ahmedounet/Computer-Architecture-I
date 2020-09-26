@@ -1,8 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
---comment
-
 entity comparator is
     port(
         a_31    : in  std_logic;
@@ -20,44 +18,20 @@ architecture synth of comparator is
 
 begin
 
+	r <= (not (b_31) and a_31 ) or ((a_31 xnor b_31) and (diff_31 or zero) ) when op = "001" else
 
-process (op, a_31, b_31, diff_31,carry, zero)
+	     ((not a_31) and b_31) or ((a_31 xnor b_31) and ( (not diff_31) and (not zero))) when op="010" else
 
---variable  check : boolean;
-begin
+	      not zero when op="011" else
 
-
-
-case op is
-
-	when "001" =>
-	r <= (not (b_31) and a_31 ) or ((a_31 xnor b_31) and (diff_31 or zero) );
-
-
-	when "010" =>
-	r<= ((not a_31) and b_31) or ((a_31 xnor b_31) and ( (not diff_31) and (not zero)));
-
-	when "011" =>
-	r<= not zero;
-
-	when "100" =>
-	r<= zero;
-
-	when "101" =>
-	r<= (not (carry)) or zero;
-	--r<= carry and (not zero);
-
-	when "110" =>
-	r<= carry and (not(zero));
-	--r<= (not carry) or zero;
-
-	when others => r<='0'; 
+	      zero when op="100" else
 	
+              (not carry) or zero when op="101" else 
 
-end case;
-
-
-end process;
+              carry and (not zero) when op="110" else
+	
+	      '0'; 
+	
 
 
 
