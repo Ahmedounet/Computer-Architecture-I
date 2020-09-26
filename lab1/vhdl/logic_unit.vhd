@@ -12,4 +12,11 @@ end logic_unit;
 
 architecture synth of logic_unit is
 begin
+    
+    r <= a nor b WHEN op = "00" else
+        a and b when op = "01" else
+        a or b when op = "10" else
+        a xnor b when op = "11" else
+        "00000000000000000000000000000000";
+
 end synth;
