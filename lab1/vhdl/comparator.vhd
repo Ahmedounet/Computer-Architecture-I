@@ -1,6 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+--comment
+
 entity comparator is
     port(
         a_31    : in  std_logic;
