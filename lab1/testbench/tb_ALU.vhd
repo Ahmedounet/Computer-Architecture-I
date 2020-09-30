@@ -76,9 +76,50 @@ begin
                             -- comparator
                             when "011" =>
 ---------------------------------------MODIFY HERE-------------------------------------------------------------
-				ASSERT FALSE
-					REPORT "Replace this ASSERT with the code to test the comparator"
+
+				case op(2 downto 0) is
+
+					when "001" =>
+						test := (signed (b)>= signed(a));
+
+					when "010" =>
+					 	test:= (signed (b) <  signed(a));
+						
+
+					when "011" =>
+						test:= (a /= b);
+						
+
+					when "100" =>
+						test := (a=b);
+						
+
+					when "101"=>
+						 test := (unsigned(b) >= unsigned (a));
+						
+
+					when "110" =>
+						 test :=( unsigned (a) > unsigned (b));
+
+					when others => test:=false;
+
+				end case;
+
+				--wait for 40 ns;
+
+				if (test = false) then
+					expected(0):='0' ;
+
+				else
+					expected(0):='1';
+
+				end if;
+
+				ASSERT expected(0)=s(0)
+					REPORT "Comparator does not work"
                 			SEVERITY ERROR;
+
+
 ---------------------------------------END MODIFY--------------------------------------------------------------
                             -- "010" is not valid -> ignore
                             -- logical unit
@@ -117,7 +158,7 @@ begin
                         if ((s /= expected) and success) then
                             ASSERT FALSE
                                 REPORT "Incorrect Behavior"
-                                SEVERITY ERROR;
+	                        SEVERITY ERROR;
                             success := FALSE;
                             wait;       -- to stop after the first error.
                         end if;
