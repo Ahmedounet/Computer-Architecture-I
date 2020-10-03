@@ -12,4 +12,17 @@ end decoder;
 
 architecture synth of decoder is
 begin
+
+	cs_ROM<=	
+		'1'	when  (address < x"1000") and (address >= X"0000") else
+		'0';
+
+	cs_RAM<=
+		'1'	when (address <x"2000") and (address >= X"1000") else
+		'0';
+
+	cs_LEDS<=
+		'1' when (address <x"2010") and (address >= X"2000") else
+		'0';
+
 end synth;
