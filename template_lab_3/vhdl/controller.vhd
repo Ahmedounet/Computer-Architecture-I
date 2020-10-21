@@ -146,7 +146,7 @@ begin
                         s_next_state <= STORE;
                     ----------------- Part 4 ------------
                     -- Table 3 page 11
-                    when "000110" | "001110" | "010110" | "111110" | "100110" | "101110" | "110110" =>
+                    when "000110" | "001110" | "010110" | "011110" | "100110" | "101110" | "110110" =>
                       --  MSB_op_alu <= comp;
                         s_next_state <= BRANCH;
                     -- END Table 3 page 11
@@ -252,7 +252,7 @@ begin
                     op_alu<=add & op(5 downto 3);
 
                 end case;
-                
+
                 s_next_state <= FETCH1;
 
             
@@ -275,6 +275,7 @@ begin
                 end if;
 
                 --end of msb_op_alu changes!
+                s_next_state <= FETCH1 ;
                 
             when CALL =>
                 -- Common signals for any CALL 
@@ -316,6 +317,8 @@ begin
                 op_alu <= shift_rot & opx(5 downto 3);
 
             --End of change of msb_op_alu
+
+            s_next_state <= FETCH1;
             when others =>
                 s_next_state <= FETCH1;
         end case;
