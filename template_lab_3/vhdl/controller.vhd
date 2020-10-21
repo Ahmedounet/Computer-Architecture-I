@@ -59,7 +59,7 @@ architecture synth of controller is
 
     signal s_current_state, s_next_state : states_type;
     -- Signal 3MSB of op_alu
-    signal MSB_op_alu : std_logic_vector(2 downto 0);
+    --signal MSB_op_alu : std_logic_vector(2 downto 0);
 
     -- Constant MSB op_alu (for operations: comp, shift, add, sub...)
     constant add : std_logic_vector(2 downto 0) := "000";
@@ -114,40 +114,40 @@ begin
                 case op is
                     -- Table 8 page 15
                     when "000100" =>
-                        MSB_op_alu <= add;
+                       -- MSB_op_alu <= add;
                         s_next_state <= I_OP;
                     -- END Table 8 (5.1)
                     --------------- Part 5 -----------------
 
                     -- Table 10 page 15
                     when "001000" | "010000" | "011000" | "100000" =>
-                        MSB_op_alu <= comp;
+                      --  MSB_op_alu <= comp;
                         s_next_state <= I_OP;
                     -- END Table 10 (5.1)
 
                     -- Table 9 page 15
                     when "001100" | "010100" | "011100" =>
-                        MSB_op_alu <= logical;
+                      --  MSB_op_alu <= logical;
                         s_next_state <= I_OP_UN;
                     -- END Table 9 page (5.1)
 
                     -- Table 11 page 16
                     when "101000" | "110000" =>
-                        MSB_op_alu <= comp; 
+                      --  MSB_op_alu <= comp; 
                         s_next_state <= I_OP_UN;
                     -- END Table 11 (5.1)
 
                     --------------- END Part 5 -------------
                     when "010111" =>
-                        MSB_op_alu <= add;
+                      --  MSB_op_alu <= add;
                         s_next_state <= LOAD1;
                     when "010101" =>
-                        MSB_op_alu <= add;
+                      --  MSB_op_alu <= add;
                         s_next_state <= STORE;
                     ----------------- Part 4 ------------
                     -- Table 3 page 11
                     when "000110" | "001110" | "010110" | "111110" | "100110" | "101110" | "110110" =>
-                        MSB_op_alu <= comp;
+                      --  MSB_op_alu <= comp;
                         s_next_state <= BRANCH;
                     -- END Table 3 page 11
                     when "000000" => 
@@ -167,7 +167,7 @@ begin
 
                             -- Table 13 and 15 page 16
                             when "010010" | "011010" | "111010" | "000010" =>
-                                MSB_op_alu <= shift_rot;
+                             --   MSB_op_alu <= shift_rot;
                                 s_next_state <= R_OP_IMM;
                             -- END Table 13 and 15 (5.2)
 
@@ -185,20 +185,26 @@ begin
                 -- Determination of MSB_op_alu
                 case opx is 
                     when "110001" =>
-                        MSB_op_alu <= add;
+                      --  MSB_op_alu <= add;
+                      op_alu <= add & opx(5 downto 3);
                     when "111001" =>
-                        MSB_op_alu <= sub;
+                      --  MSB_op_alu <= sub;
+                      op_alu <= sub & opx(5 downto 3);
                     when "001000" | "010000" =>
-                        MSB_op_alu <= comp;
+                      --  MSB_op_alu <= comp;
+                      op_alu <= comp & opx(5 downto 3);
                     when "000110" | "001110" | "010110" | "011110" =>
-                        MSB_op_alu <= logical;
+                      --  MSB_op_alu <= logical;
+                      op_alu <= logical & opx(5 downto 3);
                     when "010011" | "011011" | "111011" =>
-                        MSB_op_alu <= shift_rot;
+                     --   MSB_op_alu <= shift_rot;
+                     op_alu <= shift_rot & opx(5 downto 3);
                     when others =>
-                        MSB_op_alu <= add;
+                     --   MSB_op_alu <= add;
+                     op_alu <= add & opx(5 downto 3);
                 end case;
                 -- END determination
-                op_alu <= MSB_op_alu & opx(5 downto 3);
+               -- op_alu <= MSB_op_alu & opx(5 downto 3);
                 s_next_state <= FETCH1;
             when STORE =>
                 imm_signed <= '1';
@@ -206,13 +212,21 @@ begin
                 write <= '1';
                 sel_mem <= '1';
                 sel_addr <= '1';
-                op_alu <= MSB_op_alu & op(5 downto 3);
+--Only one case of MSB will be modified here !
+
+                op_alu <=add  & op(5 downto 3);
+
+--End of MSB_op modification
                 s_next_state <= FETCH1;
             when LOAD1 =>
                 imm_signed <= '1';
                 sel_addr <= '1';
-                op_alu <= MSB_op_alu & op(5 downto 3);
+
+                --Only one case of MSB will be modified here !
+                op_alu <= add & op(5 downto 3);
+                --End of MSB_op modification
                 s_next_state <= LOAD2;
+
             when LOAD2 =>
                 imm_signed <= '0';
                 sel_mem <= '1';
@@ -221,8 +235,29 @@ begin
             when I_OP =>
                 imm_signed <= '1';
                 rf_wren <= '1';
-                op_alu <= MSB_op_alu & op(5 downto 3);
+
+-- A lot of (2 actually) msb_op_alu will be modified here!!!
+                case op is
+                    --table 8 page 15
+                    when "000100" => 
+                        op_alu<=add & op(5 downto 3);
+                    --End table 8 (5.1)
+
+                    -- Table 10 page 15
+                    when "001000" | "010000" | "011000" | "100000" =>
+                        op_alu<= comp & op(5 downto 3);
+                    -- END Table 10 (5.1)
+               -- op_alu <= MSB_op_alu & op(5 downto 3);
+                    when others =>
+                    op_alu<=add & op(5 downto 3);
+
+                end case;
+                
                 s_next_state <= FETCH1;
+
+            
+--End msb_op_alu modification
+
             when BREAK =>
                 s_next_state <= BREAK;
             ------------------------- Part 4 -------------------------
@@ -231,14 +266,15 @@ begin
                 branch_op <= '1';
                 sel_b <= '1';
                 pc_add_imm <= '1';
-
+            -- MSB_OP_ALU changes !
+            
                 if op = "000110" then
-                    op_alu <= MSB_op_alu & "100";
+                    op_alu <= comp & "100";
                 else 
-                    op_alu <= MSB_op_alu & op(5 downto 3);
+                    op_alu <= comp & op(5 downto 3);
                 end if;
 
-
+                --end of msb_op_alu changes!
                 
             when CALL =>
                 -- Common signals for any CALL 
@@ -266,13 +302,20 @@ begin
             when I_OP_UN =>
                 imm_signed <= '0';
                 rf_wren <= '1';
-                op_alu <= MSB_op_alu & op(5 downto 3);
+                --Change of msb_op_alu
+                op_alu <= logical & op(5 downto 3);
+                --End of change of msb_op_alu
                 s_next_state <= FETCH1;
+
             when R_OP_IMM => -- What's different from R_OP ???
                 sel_rC <= '1';
                 sel_b <= '0';
                 rf_wren <= '1';
-                op_alu <= MSB_op_alu & opx(5 downto 3);
+            --Change of msb_op_alu
+
+                op_alu <= shift_rot & opx(5 downto 3);
+
+            --End of change of msb_op_alu
             when others =>
                 s_next_state <= FETCH1;
         end case;
