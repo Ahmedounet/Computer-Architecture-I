@@ -283,20 +283,22 @@ begin
                 sel_ra <= '1';
                 pc_en <= '1';
                 rf_wren <= '1';
-                if opx = "011101" then
-                    pc_sel_a <= '1';
-                else 
-                    pc_sel_imm <= '1';
-                end if;
+                case opx is 
+                    when "011101" =>
+                        pc_sel_a <= '1';
+                    when others =>
+                        pc_sel_imm <= '1';
+                end case;
                 s_next_state <= FETCH1;
             when JMP =>
                 -- Common signal for any JMP 
                 pc_en <= '1';
-                if opx = "000001" then
-                    pc_sel_imm <= '1';    
-                else 
-                    pc_sel_a <= '1';
-                end if;
+                case opx is 
+                    when "000001" =>
+                        pc_sel_imm <= '1';
+                    when others =>
+                        pc_sel_a <= '1';
+                end case;
                 s_next_state <= FETCH1;
             ------------------------- END Part 4 ---------------------
             ------------------------ Part 5 -------------
