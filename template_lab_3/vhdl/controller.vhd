@@ -190,13 +190,13 @@ begin
                     when "111001" =>
                       --  MSB_op_alu <= sub;
                       op_alu <= sub & opx(5 downto 3);
-                    when "001000" | "010000" =>
+                    when "001000" | "010000" | "011000" | "100000" | "101000" |"110000" => --WATCH OUT ANOTHER MODIFICATION MADE HERE!
                       --  MSB_op_alu <= comp;
                       op_alu <= comp & opx(5 downto 3);
-                    when "000110" | "001110" | "010110" | "011110" =>
+                    when "000110" | "001110" | "010110" | "011110"  =>
                       --  MSB_op_alu <= logical;
                       op_alu <= logical & opx(5 downto 3);
-                    when "010011" | "011011" | "111011" =>
+                    when "010011" | "011011" | "111011" | "000011" | "001011" => --WATCH OUT MODIFICATION MADE HERE!
                      --   MSB_op_alu <= shift_rot;
                      op_alu <= shift_rot & opx(5 downto 3);
                     when others =>
@@ -305,7 +305,17 @@ begin
                 imm_signed <= '0';
                 rf_wren <= '1';
                 --Change of msb_op_alu
-                op_alu <= logical & op(5 downto 3);
+
+                case op is 
+
+                    --MODIFICATIONs HERE!!!!
+                    when "101000" | "110000" =>
+                        op_alu<=comp & op(5 downto 3);
+                    when others=>
+                        op_alu <= logical & op(5 downto 3);
+                end case;
+                    --END OF MODIFICATIONS HERE!!!
+
                 --End of change of msb_op_alu
                 s_next_state <= FETCH1;
 
