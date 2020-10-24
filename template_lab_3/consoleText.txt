@@ -1,0 +1,749 @@
+Started by user Victor Bernard Maurice Gergaud
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/03-multicycle-gergaud
+Copying file to submission.zip
+[03-multicycle-gergaud] $ /bin/bash -xe /tmp/jenkins1768458835869024555.sh
++ /opt/lap-resources/evaluators/launch-jobs.sh archord1/lab06-04-03/final
+/opt/lap-resources/testbenches/archord1/lab06-04-03/final/config.sh
+
+>> Unzip files
+Archive:  submission.zip
+  inflating: add_sub.vhd             
+  inflating: ALU.vhd                 
+  inflating: buttons.vhd             
+  inflating: comparator.vhd          
+  inflating: controller.vhd          
+  inflating: CPU.vhd                 
+  inflating: decoder.vhd             
+  inflating: extend.vhd              
+  inflating: GECKO.vhd               
+  inflating: IR.vhd                  
+  inflating: LEDs.vhd                
+  inflating: logic_unit.vhd          
+  inflating: multiplexer.vhd         
+  inflating: mux2x16.vhd             
+  inflating: mux2x32.vhd             
+  inflating: mux2x5.vhd              
+  inflating: PC.vhd                  
+  inflating: RAM.vhd                 
+  inflating: register_file.vhd       
+  inflating: rgb_led96.vhd           
+  inflating: ROM.vhd                 
+  inflating: ROM_Block.vhd           
+  inflating: shift_unit.vhd          
+/opt/lap-resources/evaluators
+
+>> Launching evaluator
+
+>> Generating the work directory
+
+>> Compiling the files...
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:56 on Oct 24,2020
+vcom -2008 -suppress 1514 add_sub.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity add_sub
+-- Compiling architecture synth of add_sub
+End time: 13:00:56 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:56 on Oct 24,2020
+vcom -2008 -suppress 1514 ALU.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity ALU
+-- Compiling architecture bdf_type of ALU
+End time: 13:00:56 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:56 on Oct 24,2020
+vcom -2008 -suppress 1514 comparator.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity comparator
+-- Compiling architecture synth of comparator
+End time: 13:00:56 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:56 on Oct 24,2020
+vcom -2008 -suppress 1514 logic_unit.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity logic_unit
+-- Compiling architecture synth of logic_unit
+End time: 13:00:56 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:56 on Oct 24,2020
+vcom -2008 -suppress 1514 multiplexer.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity multiplexer
+-- Compiling architecture synth of multiplexer
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:01
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 shift_unit.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity shift_unit
+-- Compiling architecture synth of shift_unit
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 controller.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity controller
+-- Compiling architecture synth of controller
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 decoder.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity decoder
+-- Compiling architecture synth of decoder
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 RAM.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity RAM
+-- Compiling architecture synth of RAM
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 register_file.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity register_file
+-- Compiling architecture synth of register_file
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 CPU.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity CPU
+-- Compiling architecture bdf_type of CPU
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 IR.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity IR
+-- Compiling architecture synth of IR
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 PC.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity PC
+-- Compiling architecture synth of PC
+End time: 13:00:57 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:57 on Oct 24,2020
+vcom -2008 -suppress 1514 buttons.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity buttons
+-- Compiling architecture synth of buttons
+End time: 13:00:58 on Oct 24,2020, Elapsed time: 0:00:01
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:58 on Oct 24,2020
+vcom -2008 -suppress 1514 extend.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity extend
+-- Compiling architecture synth of extend
+End time: 13:00:58 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:58 on Oct 24,2020
+vcom -2008 -suppress 1514 mux2x5.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity mux2x5
+-- Compiling architecture synth of mux2x5
+End time: 13:00:58 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:58 on Oct 24,2020
+vcom -2008 -suppress 1514 mux2x16.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity mux2x16
+-- Compiling architecture synth of mux2x16
+End time: 13:00:58 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+linux
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+Start time: 13:00:58 on Oct 24,2020
+vcom -2008 -suppress 1514 mux2x32.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity mux2x32
+-- Compiling architecture synth of mux2x32
+End time: 13:00:58 on Oct 24,2020, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+
+>> Compiling the testbenches...
+
+>> Simulating the testbenches...
+
+>> Generating evaluation report
+
+compile => add_sub_vhd:	
+	Successful compilation
+
+compile => ALU_vhd:	
+	Successful compilation
+
+compile => comparator_vhd:	
+	Successful compilation
+
+compile => logic_unit_vhd:	
+	Successful compilation
+
+compile => multiplexer_vhd:	
+	Successful compilation
+
+compile => shift_unit_vhd:	
+	Successful compilation
+
+compile => controller_vhd:	
+	Successful compilation
+
+compile => decoder_vhd:	
+	Successful compilation
+
+compile => RAM_vhd:	
+	Successful compilation
+
+compile => register_file_vhd:	
+	Successful compilation
+
+compile => CPU_vhd:	
+	Successful compilation
+
+compile => IR_vhd:	
+	Successful compilation
+
+compile => PC_vhd:	
+	Successful compilation
+
+compile => buttons_vhd:	
+	Successful compilation
+
+compile => extend_vhd:	
+	Successful compilation
+
+compile => mux2x5_vhd:	
+	Successful compilation
+
+compile => mux2x16_vhd:	
+	Successful compilation
+
+compile => mux2x32_vhd:	
+	Successful compilation
+
+compile => testbenches:	
+	Successful compilation
+
+lab03_final_add_sub_tb => Add zero:	2 / 2
+	Successful
+
+lab03_final_add_sub_tb => Add carry:	1 / 1
+	Successful
+
+lab03_final_add_sub_tb => Add result:	1 / 1
+	Successful
+
+lab03_final_add_sub_tb => Sub zero:	2 / 2
+	Successful
+
+lab03_final_add_sub_tb => Sub carry:	1 / 1
+	Successful
+
+lab03_final_add_sub_tb => Sub result:	1 / 1
+	Successful
+
+lab03_final_alu_tb => Add/Sub:	1 / 1
+	Successful
+
+lab03_final_alu_tb => Comparison:	1 / 1
+	Successful
+
+lab03_final_alu_tb => Logical:	1 / 1
+	Successful
+
+lab03_final_alu_tb => Shift/Rotate:	1 / 1
+	Successful
+
+lab03_final_comparator_tb => <= Signed:	0.6 / 0.6
+	Successful
+
+lab03_final_comparator_tb => > Signed:	0.6 / 0.6
+	Successful
+
+lab03_final_comparator_tb => Not equal:	0.6 / 0.6
+	Successful
+
+lab03_final_comparator_tb => Equal:	0.6 / 0.6
+	Successful
+
+lab03_final_comparator_tb => <= Unsigned:	0.6 / 0.6
+	Successful
+
+lab03_final_comparator_tb => > Unsigned:	0.6 / 0.6
+	Successful
+
+lab03_final_logic_unit_tb => NOR:	0.6 / 0.6
+	Successful
+
+lab03_final_logic_unit_tb => AND:	0.6 / 0.6
+	Successful
+
+lab03_final_logic_unit_tb => OR:	0.6 / 0.6
+	Successful
+
+lab03_final_logic_unit_tb => XOR:	0.6 / 0.6
+	Successful
+
+lab03_final_multiplexer_tb => Multiplexor:	2 / 2
+	Successful
+
+lab04_final_decoder_tb => All:	1.25 / 1.25
+	Successful
+
+lab04_final_decoder_tb => RAM:	1.25 / 1.25
+	Successful
+
+lab04_final_decoder_tb => ROM:	1.25 / 1.25
+	Successful
+
+lab04_final_decoder_tb => LEDs:	1.25 / 1.25
+	Successful
+
+lab04_final_ram_tb => Tristate:	2 / 2
+	Successful
+
+lab04_final_ram_tb => Read / Write:	3 / 3
+	Successful
+
+lab04_final_register_file_tb => Write:	2 / 2
+	Successful
+
+lab04_final_register_file_tb => Write / asynchronous read:	2 / 2
+	Successful
+
+lab04_final_register_file_tb => Register zero:	2 / 2
+	Successful
+
+lab04_final_register_file_tb => Load / asynchronous read:	2 / 2
+	Successful
+
+lab04_final_register_file_tb => Read:	2 / 2
+	Successful
+
+lab06_final_controller_tb => ret state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => ret alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => jmp state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => jmp alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => roli state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => roli alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110000 but got UUUUUU, when op = 111010, opx = 000010
+
+lab06_final_controller_tb => srli state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => srli alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110011 but got UUUUUU, when op = 111010, opx = 011010
+
+lab06_final_controller_tb => srai state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => srai alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110111 but got UUUUUU, when op = 111010, opx = 111010
+
+lab06_final_controller_tb => callr state:	0 / 0.35
+	Invalid state of the controller attained. Expected 0 for Sel_rC, got 1. 
+
+lab06_final_controller_tb => callr alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => srl state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => srl alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110011 but got UUUUUU, when op = 111010, opx = 011011
+
+lab06_final_controller_tb => and state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => and alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 100001 but got UUUUUU, when op = 111010, opx = 001110
+
+lab06_final_controller_tb => add state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => add alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 000110 but got UUUUUU, when op = 111010, opx = 110001
+
+lab06_final_controller_tb => sub state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => sub alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 001111 but got UUUUUU, when op = 111010, opx = 111001
+
+lab06_final_controller_tb => cmple state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmple alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011001 but got UUUUUU, when op = 111010, opx = 001000
+
+lab06_final_controller_tb => cmpgt state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpgt alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011010 but got UUUUUU, when op = 111010, opx = 010000
+
+lab06_final_controller_tb => nor state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => nor alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 100000 but got UUUUUU, when op = 111010, opx = 000110
+
+lab06_final_controller_tb => or state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => or alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 100010 but got UUUUUU, when op = 111010, opx = 010110
+
+lab06_final_controller_tb => xor state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => xor alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 100011 but got UUUUUU, when op = 111010, opx = 011110
+
+lab06_final_controller_tb => sll state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => sll alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110010 but got UUUUUU, when op = 111010, opx = 010011
+
+lab06_final_controller_tb => sra state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => sra alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110111 but got UUUUUU, when op = 111010, opx = 111011
+
+lab06_final_controller_tb => slli state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => slli alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110010 but got UUUUUU, when op = 111010, opx = 010010
+
+lab06_final_controller_tb => cmpne state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpne alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011011 but got UUUUUU, when op = 111010, opx = 011000
+
+lab06_final_controller_tb => cmpeq state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpeq alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011100 but got UUUUUU, when op = 111010, opx = 100000
+
+lab06_final_controller_tb => cmpleu state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpleu alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011101 but got UUUUUU, when op = 111010, opx = 101000
+
+lab06_final_controller_tb => cmpgtu state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpgtu alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011110 but got UUUUUU, when op = 111010, opx = 110000
+
+lab06_final_controller_tb => rol state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => rol alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110000 but got UUUUUU, when op = 111010, opx = 000011
+
+lab06_final_controller_tb => ror state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => ror alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 110001 but got UUUUUU, when op = 111010, opx = 001011
+
+lab06_final_controller_tb => call state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => call alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => addi state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => addi alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 000000 but got UUUUUU, when op = 000100, opx = 001011
+
+lab06_final_controller_tb => br state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => br alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => bge state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => bge alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011001 but got 011100, when op = 001110, opx = 001011
+
+lab06_final_controller_tb => blt state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => blt alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011010 but got 011100, when op = 010110, opx = 001011
+
+lab06_final_controller_tb => bne state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => bne alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011011 but got 011100, when op = 011110, opx = 001011
+
+lab06_final_controller_tb => beq state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => beq alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => bleu state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => bleu alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011101 but got 011100, when op = 101110, opx = 001011
+
+lab06_final_controller_tb => bgtu state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => bgtu alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011110 but got 011100, when op = 110110, opx = 001011
+
+lab06_final_controller_tb => load state:	0 / 0.35
+	Invalid state of the controller attained. Expected 1 for Pc_en, got 0. 
+
+lab06_final_controller_tb => load alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => store state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => store alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => andi state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => andi alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 100001 but got 000010, when op = 001100, opx = 001011
+
+lab06_final_controller_tb => xnori state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => xnori alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 100011 but got 000010, when op = 011100, opx = 001011
+
+lab06_final_controller_tb => ori state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => ori alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 100010 but got 000010, when op = 010100, opx = 001011
+
+lab06_final_controller_tb => cmpleui state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpleui alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011101 but got 000010, when op = 101000, opx = 001011
+
+lab06_final_controller_tb => cmpgtui state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpgtui alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011110 but got 000010, when op = 110000, opx = 001011
+
+lab06_final_controller_tb => jmpi state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => jmpi alu:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmplei state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmplei alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011001 but got 000010, when op = 001000, opx = 001011
+
+lab06_final_controller_tb => cmpgti state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpgti alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011010 but got 000010, when op = 010000, opx = 001011
+
+lab06_final_controller_tb => cmpnei state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpnei alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011011 but got 000010, when op = 011000, opx = 001011
+
+lab06_final_controller_tb => cmpeqi state:	0.35 / 0.35
+	Successful
+
+lab06_final_controller_tb => cmpeqi alu:	0 / 0.35
+	Wrong ALU operation selected. Expected op_alu = 011100 but got 000010, when op = 100000, opx = 001011
+
+lab06_final_extend_tb => Signed:	2.45 / 2.45
+	Successful
+
+lab06_final_extend_tb => Unsigned:	2.45 / 2.45
+	Successful
+
+lab06_final_ir_tb => IR:	2 / 2
+	Successful
+
+lab06_final_mux2x5_tb => Mux2x5:	1 / 1
+	Successful
+
+lab06_final_mux2x16_tb => Mux2x16:	1 / 1
+	Successful
+
+lab06_final_mux2x32_tb => Mux2x32:	1 / 1
+	Successful
+
+lab06_final_pc_tb => Count on lower bits:	0 / 2.5
+	The PC should have a 16-bit address counter, filling the lower bits. The top 16 bits should be zeroes
+
+lab06_final_pc_tb => Count when enabled:	1.7 / 1.7
+	Successful
+
+lab06_final_pc_tb => Count by increment of 4:	1.7 / 1.7
+	Successful
+
+lab06_final_pc_tb => Select immediate:	1.7 / 1.7
+	Successful
+
+lab06_final_pc_tb => Immediate is shifted right by 2:	1.7 / 1.7
+	Successful
+
+lab06_final_pc_tb => PC is synchronous:	1.7 / 1.7
+	Successful
+
+lab06_final_pc_tb => Reset is asynchronous:	1.7 / 1.7
+	Successful
+
+lab06_final_pc_tb => Enabled and add immediate:	1.7 / 1.7
+	Successful
+
+lab06_final_pc_tb => Address validity:	0 / 2.5
+	Address invalid, 2 least significant bits should always be '0'.
+
+lab06_final_pc_tb => Select a:	1.7 / 1.7
+	Successful
+
+You got a score of 81.7000000000001 / 100 (81.7%) on job 03
+
+>> Cleaning the working directory
+
+>> End of evaluation.
+Archiving artifacts
+Recording test results
+Build step 'Publish JUnit test result report' changed build result to UNSTABLE
+Finished: UNSTABLE
