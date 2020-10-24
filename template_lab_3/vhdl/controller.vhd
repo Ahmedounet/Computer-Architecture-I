@@ -113,29 +113,15 @@ begin
                 ir_en <= '0';
                 case op is
                     -- Table 8 page 15
-                    when "000100" =>
-                       -- MSB_op_alu <= add;
+                    when "000100" | "001000" | "010000" | "011000" | "100000" | "000001" =>
                         s_next_state <= I_OP;
                     -- END Table 8 (5.1)
                     --------------- Part 5 -----------------
 
-                    -- Table 10 page 15
-                    when "001000" | "010000" | "011000" | "100000" =>
-                      --  MSB_op_alu <= comp;
-                        s_next_state <= I_OP;
-                    -- END Table 10 (5.1)
-
                     -- Table 9 page 15
-                    when "001100" | "010100" | "011100" =>
-                      --  MSB_op_alu <= logical;
+                    when "001100" | "010100" | "011100" | "101000" | "110000" =>
                         s_next_state <= I_OP_UN;
                     -- END Table 9 page (5.1)
-
-                    -- Table 11 page 16
-                    when "101000" | "110000" =>
-                      --  MSB_op_alu <= comp; 
-                        s_next_state <= I_OP_UN;
-                    -- END Table 11 (5.1)
 
                     --------------- END Part 5 -------------
                     when "010111" =>
@@ -156,8 +142,6 @@ begin
                         case opx is
                             when "110100" =>
                                 s_next_state <= BREAK;
-                            when "000001" =>
-                                s_next_state <= JMP;
                             when "000101" =>
                                 s_next_state <= JMP;
                             when "001101" =>
@@ -186,22 +170,28 @@ begin
                 case opx is 
                     when "110001" =>
                       --  MSB_op_alu <= add;
-                      op_alu <= add & opx(5 downto 3);
+                        op_alu <= add & opx(5 downto 3);
                     when "111001" =>
                       --  MSB_op_alu <= sub;
-                      op_alu <= sub & opx(5 downto 3);
+                        op_alu <= sub & opx(5 downto 3);
                     when "001000" | "010000" | "011000" | "100000" | "101000" |"110000" => --WATCH OUT ANOTHER MODIFICATION MADE HERE!
                       --  MSB_op_alu <= comp;
-                      op_alu <= comp & opx(5 downto 3);
+                        op_alu <= comp & opx(5 downto 3);
                     when "000110" | "001110" | "010110" | "011110"  =>
                       --  MSB_op_alu <= logical;
-                      op_alu <= logical & opx(5 downto 3);
+                        op_alu <= logical & opx(5 downto 3);
                     when "010011" | "011011" | "111011" | "000011" | "001011" => --WATCH OUT MODIFICATION MADE HERE!
                      --   MSB_op_alu <= shift_rot;
-                     op_alu <= shift_rot & opx(5 downto 3);
+                        op_alu <= shift_rot & opx(5 downto 3);
+                    when "011101" => -- CALLR
+                        pc_sel_a <= '1';
+                        sel_pc <= '1';
+                        sel_ra <= '1';
+                        pc_en <= '1';
+                        rf_wren <= '1';
                     when others =>
                      --   MSB_op_alu <= add;
-                     op_alu <= add & opx(5 downto 3);
+                        op_alu <= add & opx(5 downto 3);
                 end case;
                 -- END determination
                -- op_alu <= MSB_op_alu & opx(5 downto 3);
@@ -238,18 +228,22 @@ begin
 
 -- A lot of (2 actually) msb_op_alu will be modified here!!!
                 case op is
+                    when "000001" => -- JMPI
+                        pc_en <= '1';
+                        rf_wren <= '0';
+                        pc_sel_imm <= '1';
                     --table 8 page 15
                     when "000100" => 
-                        op_alu<=add & op(5 downto 3);
+                        op_alu <= add & op(5 downto 3);
                     --End table 8 (5.1)
 
                     -- Table 10 page 15
                     when "001000" | "010000" | "011000" | "100000" =>
-                        op_alu<= comp & op(5 downto 3);
+                        op_alu <= comp & op(5 downto 3);
                     -- END Table 10 (5.1)
                -- op_alu <= MSB_op_alu & op(5 downto 3);
                     when others =>
-                    op_alu<=add & op(5 downto 3);
+                        op_alu <= add & op(5 downto 3);
 
                 end case;
 
@@ -283,21 +277,12 @@ begin
                 sel_ra <= '1';
                 pc_en <= '1';
                 rf_wren <= '1';
-                if opx = "011101" then
-                    pc_sel_a <= '1';
-                else
-                    pc_sel_imm <= '1';
-                end if;
+                pc_sel_imm <= '1';
                 s_next_state <= FETCH1;
             when JMP =>
                 -- Common signal for any JMP 
                 pc_en <= '1';
-                case opx is 
-                    when "000101" | "001101"=>
-                        pc_sel_a <= '1';
-                    when others =>
-                        pc_sel_imm <= '1';
-                end case;
+                pc_sel_a <= '1';
                 s_next_state <= FETCH1;
             ------------------------- END Part 4 ---------------------
             ------------------------ Part 5 -------------
