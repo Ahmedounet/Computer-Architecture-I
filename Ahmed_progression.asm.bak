@@ -37,11 +37,16 @@ main:
 	call get_input
 	add a0, v0, zero
 
-	;call update_state
-
-	call change_speed 
-
+	
 jmpi main
+
+
+
+
+
+
+
+
 
 
 ;BEGIN:change_speed
@@ -50,7 +55,6 @@ change_speed:
 	# decreasing 2
 
 	srli a0, a0, 2
-;	andi a0, a0, 1 # not robust only checks for button 1
 
 	ldw t0, SPEED(zero)
 	addi t1, zero,1
@@ -295,9 +299,6 @@ change_steps:
 		addi t0,t0, 0x10
 
 		display_tens:
-
-		;add t6, t0, zero
-	;	add t7, t3, zero
 		
 		andi t3, t0, 0xF0
 		srli t3, t3, 4
@@ -394,6 +395,21 @@ get_input:
 		jmpi loop_bit_select
 
 ;END:get_input
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 font_data:

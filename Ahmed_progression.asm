@@ -37,11 +37,16 @@ main:
 	call get_input
 	add a0, v0, zero
 
-	;call update_state
-
-	call change_speed 
-
+	
 jmpi main
+
+
+
+
+
+
+
+
 
 
 ;BEGIN:change_speed
@@ -294,9 +299,6 @@ change_steps:
 		addi t0,t0, 0x10
 
 		display_tens:
-
-		;add t6, t0, zero
-	;	add t7, t3, zero
 		
 		andi t3, t0, 0xF0
 		srli t3, t3, 4
@@ -393,6 +395,93 @@ get_input:
 		jmpi loop_bit_select
 
 ;END:get_input
+
+
+
+;BEGIN:select_action
+
+select_action:
+
+	ldw t0, CURR_STATE(zero)
+	addi t1, zero, 1
+	addi t2, zero, 2
+	addi t3, zero, 4
+	addi t4, zero, 8
+
+	addi t5, zero, INIT
+	addi t6, zero, RAND
+	addi t7, zero, RUN
+
+
+;	addi s7, ra, 0
+
+	addi s1, ra,0
+
+	beq t0, t5, select_state_init
+	beq t0, t6, select_state_rand
+	beq t0, t7, select_state_run
+
+
+end_select_action:
+
+;	addi ra, s7, 0
+
+	addi ra,s1,0
+
+	ret
+
+	select_state_init:
+
+		beq a0, t1, increment_seed
+
+		beq a0, t2, end_select_action
+
+		beq a0, t3, change_steps
+		addi t4, zero, 8
+		beq a0, t4, change_steps
+		addi t4, zero, 16
+		beq a0, t4, change_steps
+
+		jmpi end_select_action
+
+	select_state_rand:
+
+		beq a0, t1, increment_seed
+
+		beq a1, t2, end_select_action
+
+		beq a0, t3, change_steps
+		addi t4, zero, 8
+		beq a0, t4, change_steps
+		addi t4, zero, 16
+		beq a0, t4, change_steps
+
+		jmpi end_select_action
+
+	select_state_run:
+
+		beq a0, t1, pause_game
+		beq a0, t2, change_speed
+		beq a0, t3, change_speed
+		addi t4, zero, 8
+		beq a0, t4, end_select_action
+		addi t4, zero, 16
+		beq a0, t4, random_gsa 
+
+		jmpi end_select_action
+;END:select_action
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 font_data:
