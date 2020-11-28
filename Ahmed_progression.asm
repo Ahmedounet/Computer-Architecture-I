@@ -409,6 +409,7 @@ change_steps:
 
 	end_change_steps:
 		
+		andi t0, t0, 0xFFF
 		stw t0, CURR_STEP(zero)
 
 		ret
