@@ -144,6 +144,8 @@ change_steps:
 	
 		jmpi end_change_steps
 	
+	reset_hundreds:
+		addi t3, zero, 0
 	
 		jmpi display_hundreds
 	
