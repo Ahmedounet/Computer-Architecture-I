@@ -49,8 +49,7 @@ change_speed:
 	# increasing 1
 	# decreasing 2
 
-	srli a0, a0, 1
-	andi a0, a0, 1 # not robust only checks for button 1
+	srli a0, a0, 2
 
 	ldw t0, SPEED(zero)
 	addi t1, zero,1
@@ -60,20 +59,19 @@ change_speed:
 
 	end_change_speed:
 
-
 		stw t0, SPEED(zero)
 
 	ret
 
 	increment:
 		addi t4, zero, MAX_SPEED
-		beq t0, t4, end_change_speed
+		bge t0, t4, end_change_speed
 		addi t0, t0, 1
 		jmpi end_change_speed
 
 	decrement:
 		addi t5, zero, MIN_SPEED
-		beq t0, t5, end_change_speed
+		bge t5, t0, end_change_speed
 		sub t0, t0, t1
 		jmpi end_change_speed
 
