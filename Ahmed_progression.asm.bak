@@ -29,24 +29,18 @@
     .equ RUNNING, 0x01
 
 
-
-
-
 main:
 
-	;call get_input
-	;add a0, v0, zero
+	call get_input
+	add a0, v0, zero
 
-	addi t0, t0, 1
+	addi t0, t0, 0
 
 	stw t0, SEED(zero)
 
-	call increment_seed
-
-
+	call change_steps
 	
 jmpi main
-
 
 
 ;BEGIN:increment_seed
@@ -195,9 +189,6 @@ set_gsa:
 
 
 
-
-
-
 ;BEGIN:change_speed
 change_speed:
 	# increasing 1
@@ -230,13 +221,6 @@ change_speed:
 		jmpi end_change_speed
 
 ;END:change_speed
-
-
-
-
-
-
-
 
 
 
@@ -408,15 +392,19 @@ change_steps:
 
 	ldw t0, CURR_STEP(zero)
 
+	addi t7,zero,0 #carry set to 0
+
 
 	bne a0, zero, add_unit
 	check_tens:
 
 		bne a1, zero, add_tens
+		bne t7,zero, display_tens
 
 
 	check_hundreds:
 		bne a2, zero, add_hundreds
+		bne t7,zero, display_hundreds
 	
 
 	end_change_steps:
@@ -429,10 +417,14 @@ change_steps:
 		
 		addi t0, t0,1 
 
+	
+
 		display_unit:
 
 		andi t3, t0, 0xF
-		slli t4,t3,2		
+		slli t4,t3,2	
+
+	
 
 		ldw t4, font_data(t4)
 
@@ -440,16 +432,23 @@ change_steps:
 
 		stw t4, SEVEN_SEGS(t5) # units
 
+		beq t3, zero, add_carry_tens #Check the carry	
+
+		addi t7, zero, 0
+
 		jmpi check_tens 
 
+	add_carry_tens:
+			addi t7,zero, 1
+	jmpi check_tens
 
 	add_tens:
-		
 		addi t0,t0, 0x10
 
 		display_tens:
-		
+
 		andi t3, t0, 0xF0
+		
 		srli t3, t3, 4
 
 		#Chiffre récupéré dans t3
@@ -462,9 +461,15 @@ change_steps:
 		stw t4, SEVEN_SEGS(t5) # hundreds
 
 
+		beq t3, zero, add_carry_hundreds #Check the carry	
+
+		addi t7, zero, 0
+
 		jmpi check_hundreds
 
-
+	add_carry_hundreds:
+		addi t7,zero, 1
+	jmpi check_hundreds
 
 	add_hundreds:
 		addi t0,t0, 0x100
@@ -475,14 +480,13 @@ change_steps:
 		
 		andi t3, t6, 0xF00
 		srli t3, t3, 8
-
+		add t3,t3,t7
 		#Chiffre récupéré dans t3
 
 		slli t4, t3, 2
 		ldw t4, font_data(t4)
 		addi t5,zero, 4 
 		
-
 		stw t4, SEVEN_SEGS(t5) # hundreds
 	
 		jmpi end_change_steps
@@ -498,7 +502,6 @@ change_steps:
 
 ;BEGIN:get_input
 get_input:
-
 
 	#RESET ALL REGISTERS!
 
@@ -517,6 +520,9 @@ get_input:
  
 	addi t2, zero, 0 ;increment to see what bit do we have
 	ldw t1, BUTTONS(t0)
+
+	beq t1, zero, end_zero_not_any_button_pressed
+
 	addi t4, t1, 0 
 	loop_bit_select:
 
@@ -536,6 +542,11 @@ get_input:
 	stw zero, BUTTONS(t0) # clears the edgecapture register
 
 	ret
+
+	end_zero_not_any_button_pressed:
+	addi v0,zero,0
+	ret
+
 
 	bit_increment:
 
