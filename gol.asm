@@ -1,4 +1,4 @@
-    ;;    game state memory location
+        ;;    game state memory location
     .equ CURR_STATE, 0x1000              ; current game state
     .equ GSA_ID, 0x1004                     ; gsa currently in use for drawing
     .equ PAUSE, 0x1008                     ; is the game paused or running
@@ -81,7 +81,7 @@ main:
 		call update_state
 		#add s7, zero, a0 #saving a0 from the callees needed?
 		
-		#call update_gsa
+		call update_gsa
 		call mask
 		call draw_gsa
 		call change_steps
@@ -409,7 +409,7 @@ change_steps:
 		andi t3, t0, 0xF0
 		srli t3, t3, 4
 
-		#Chiffre récupéré dans t3
+		#Chiffre rÃ©cupÃ©rÃ© dans t3
 
 		slli t4, t3, 2
 		ldw t4, font_data(t4)
@@ -433,7 +433,7 @@ change_steps:
 		andi t3, t6, 0xF00
 		srli t3, t3, 8
 
-		#Chiffre récupéré dans t3
+		#Chiffre rÃ©cupÃ©rÃ© dans t3
 
 		slli t4, t3, 2
 		ldw t4, font_data(t4)
@@ -470,36 +470,43 @@ addi ra, s7, 0
 	ret
 
 	init_seed:
-		; add 1 to seed
+	
 		ldw t1, SEED(zero)
 		addi t1, t1, 1
 		stw t1, SEED(zero)
 
-		ldw t2, MASKS(t1)
+		slli t1, t1 ,2
+
+		ldw t6, SEEDS(t1)
 
 		addi t4,zero,0
-
+		addi t2,zero,0
 		addi t5,zero,8
+		add t7, zero,t6
 	loop_inc_seed_gsa:
 
-		add a0, zero, t2
+		add t7, t6, t2
+		ldw	t7, 0(t7)
+		
+		add a0, zero, t7
 		add a1, zero, t4
-		call set_gsa
 
+		call set_gsa	
+
+		#condition d'arret 8 fois, 8 lignes a mettre
 		addi t4, t4, 1
-
+	
+#Deplacement a la ligne suivante dans le seed
 		addi t2, t2, 4
 
 		beq t4, t5, end_increment_seed
 
 		jmpi loop_inc_seed_gsa
 
-
-
 	jmpi end_increment_seed
 
 	rand_seed:
-		call random_gsa
+	call random_gsa
 		jmpi end_increment_seed
 ;END:increment_seed
 
@@ -883,36 +890,53 @@ mask:
 ;BEGIN:get_input
 get_input:
 
-	addi t0, zero, 4
-	addi t3, zero, 2 ; step
+
+    #RESET ALL REGISTERS!
+
+    addi t0, zero, 0
+    addi t1, zero, 0
+    addi t2, zero, 0
+    addi t3, zero, 0
+    addi t4, zero, 0
+    addi t5, zero, 0
+    addi t6, zero, 0
+    addi t7, zero, 0
+
+
+    addi t0, zero, 4
+    addi t3, zero, 2 ; step
  
-	addi t2, zero, 0 ;increment to see what bit do we have
-	ldw t1, BUTTONS(t0)
-	addi t4, t1, 0 
-	loop_bit_select:
+    addi t2, zero, 0 ;increment to see what bit do we have
+    ldw t1, BUTTONS(t0)
 
-		srli t4, t4, 1
-		bge zero, t4, end_get_input
-	
-		jmpi bit_increment
-	
-	end_get_input:
-	addi t1, zero, 1
-	sll t1, t1, t2
-	add v0, zero, t1 
+    beq t1, zero, end_zero_not_any_button_pressed
 
-	#addi t1, zero, 0
-	
-	
-	stw zero, BUTTONS(t0) # clears the edgecapture register
+    addi t4, t1, 0 
+    loop_bit_select:
 
-	ret
+        srli t4, t4, 1
+        bge zero, t4, end_get_input
 
-	bit_increment:
+        jmpi bit_increment
 
-		addi t2, t2, 1
+    end_get_input:
+    addi t1, zero, 1
+    sll t1, t1, t2
+    add v0, zero, t1 
 
-		jmpi loop_bit_select
+    stw zero, BUTTONS(t0) # clears the edgecapture register
+
+    ret
+
+    end_zero_not_any_button_pressed:
+    addi v0,zero,0
+    ret
+
+    bit_increment:
+
+        addi t2, t2, 1
+
+        jmpi loop_bit_select
 
 ;END:get_input
 
