@@ -41,6 +41,77 @@ main:
 jmpi main
 
 
+; BEGIN:update_gsa
+update_gsa:
+
+    addi s7, ra, 0
+
+	addi t7,zero, PAUSED
+
+	ldw t6, pause(zero)
+
+	beq t6,t7,end_update_gsa
+
+
+
+
+    addi s0, zero, N_GSA_LINES
+    andi s1, s1, 0
+    andi s5, s5, 0
+
+    update_line_loop:
+        beq s1, s0, end_update_line_loop # if s1==8 we're done looping over the lines
+
+
+        addi s2, zero, -1
+        addi s3, zero, N_GSA_COLUMNS - 1
+        addi s5, zero, 0
+
+
+        add a1, s1, zero # y coordinate
+        update_column_loop:
+            beq s2, s3, end_update_column_loop
+
+            slli s5, s5, 1 
+            andi a0, a0, 0
+            add a0, s3, zero # x coordinate
+            call find_neighbours
+
+            add a0, v0, zero
+            add a1, v1, zero
+            call cell_fate 
+
+            add s5, v0, s5 # building the line to pass as argument to set_gsa
+
+
+            addi s3, s3, -1
+            jmpi update_column_loop
+        end_update_column_loop:
+        add a0, s5, zero
+        add a1, s1, zero
+        ldw t7, GSA_ID(zero)
+        xori t7, t7, 1 # inverting the GSA_ID
+        stw t7, GSA_ID(zero)
+        call set_gsa
+        ldw t7, GSA_ID(zero)
+        xori t7, t7, 1 # inverting the GSA_ID
+        stw t7, GSA_ID(zero)
+
+        addi s1, s1, 1
+        jmpi update_line_loop
+    end_update_line_loop:
+
+    ldw t7, GSA_ID(zero)
+    xori t7, t7, 1 # inverting the GSA_ID
+    stw t7, GSA_ID(zero)
+
+	end_update_gsa:
+    addi ra, s7, 0
+    ret
+; END:update_gsa
+
+
+
 
 
 
