@@ -37,9 +37,203 @@ main:
 	call get_input
 	add a0, v0, zero
 
-	call change_steps 
+	;call update_state
+
+	call change_speed 
 
 jmpi main
+
+
+;BEGIN:change_speed
+change_speed:
+	# increasing 1
+	# decreasing 2
+
+	srli a0, a0, 1
+	andi a0, a0, 1 # not robust only checks for button 1
+
+	ldw t0, SPEED(zero)
+	addi t1, zero,1
+
+	beq a0, zero, increment
+	beq a0, t1, decrement
+
+	end_change_speed:
+
+
+		stw t0, SPEED(zero)
+
+	ret
+
+	increment:
+		addi t4, zero, MAX_SPEED
+		beq t0, t4, end_change_speed
+		addi t0, t0, 1
+		jmpi end_change_speed
+
+	decrement:
+		addi t5, zero, MIN_SPEED
+		beq t0, t5, end_change_speed
+		sub t0, t0, t1
+		jmpi end_change_speed
+
+;END:change_speed
+
+
+
+
+
+
+
+
+
+
+
+;BEGIN:update_state
+
+update_state:
+
+	addi s7, ra, 0
+
+	ldw t0, CURR_STATE(zero)
+
+	addi t1,zero, INIT
+	addi t2, zero, RAND
+	addi t3, zero, RUN
+
+	addi t4, zero, 1
+	addi t5, zero, 2
+	addi t6,zero, 4
+	addi t7,zero, 8
+
+	beq t0, t1, initial_state 
+	beq t0, t2, random_state
+	beq t0, t3, run_state
+
+	end_update_state:
+
+		addi ra, s7, 0
+
+	ret
+
+	initial_state:
+
+		beq a0, t5, goto_run
+
+		beq a0, t4, goto_rand
+
+		jmpi end_update_state
+
+	goto_rand:
+
+		ldw t0, SEED(zero)
+		addi t1, zero, 4
+
+
+		blt t0, t1, end_update_state
+
+		stw t2, CURR_STATE(zero)
+
+		jmpi end_update_state
+
+
+	goto_run:
+		stw t3, CURR_STATE(zero)
+
+		jmpi end_update_state
+
+	goto_init:
+		
+		stw t1, CURR_STATE(zero)
+
+		add t7,s7,zero
+		call reset_game
+	
+		add s7, t7 ,zero
+
+		jmpi end_update_state
+
+
+	random_state:
+		beq a0, t5, goto_run # button1 going to run state
+		beq a0, t6, end_update_state # button2
+		beq a0, t7, end_update_state # button3
+		beq a0, t4, end_update_state # button0
+		addi t4, zero, 16
+		beq a0, t4, end_update_state
+
+		jmpi end_update_state
+
+	run_state:
+		beq a0, t5, end_update_state # button1
+
+		beq a0, t7, goto_init # button3
+		beq a0, t6, end_update_state # button2
+	
+		addi t7, zero, 16
+		beq a0, t7, end_update_state # button4
+		jmpi end_update_state
+
+;END:update_state
+
+
+;BEGIN:reset_game
+
+reset_game:
+	
+	addi s7, ra, 0
+
+	addi t1, zero, 1
+
+	stw t1, CURR_STEP(zero)
+
+	addi t3, zero, 3
+	slli t3, t3, 2 # offset in 7 seg
+	slli t2, t1, 2 # offset in font_data to get digit 1
+	
+	slli t4, t1, 2
+	ldw t0, font_data(zero)
+	stw t0, SEVEN_SEGS(t4) # seg1
+	slli t4, t4, 1
+	stw t0, SEVEN_SEGS(t4) # seg2
+	
+	ldw t1, font_data(t2)
+	stw t1, SEVEN_SEGS(t3) # seg3
+
+	call pause_game
+
+	stw zero, SEED(zero)
+
+	stw zero, GSA0(zero)
+
+	stw zero, GSA_ID(zero)
+	stw t1, SPEED(zero)
+
+	addi ra, s7, 0
+
+	ret
+;END:reset_game
+
+
+
+
+
+
+;BEGIN:pause_game
+pause_game:
+
+	ldw t0, PAUSE(zero) ; We get the current pause state
+
+	addi t2, zero, PAUSED
+	addi t3, zero, RUNNING
+
+	xori t0, t0, 1
+	stw t0, PAUSE(zero)
+
+	ret
+	
+;END:pause_game
+
 
 
 
