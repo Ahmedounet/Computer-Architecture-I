@@ -34,9 +34,14 @@
 
 main:
 
-	call get_input
-	add a0, v0, zero
+	;call get_input
+	;add a0, v0, zero
 
+	addi t0, t0, 1
+
+	stw t0, SEED(zero)
+
+	call increment_seed
 
 
 	
@@ -70,25 +75,33 @@ addi ra, s7, 0
 		addi t1, t1, 1
 		stw t1, SEED(zero)
 
+		slli t1, t1 ,2
+
+		ldw t6, SEEDS(t1)
 
 		addi t4,zero,0
-
+		addi t2,zero,0
 		addi t5,zero,8
+		add t7, zero,t6
 	loop_inc_seed_gsa:
 
-		add a0, zero, t2
+		add t7, t6, t2
+		ldw	t7, 0(t7)
+		
+		add a0, zero, t7
 		add a1, zero, t4
-		call set_gsa
 
+		call set_gsa	
+
+		#condition d'arret 8 fois, 8 lignes a mettre
 		addi t4, t4, 1
-
+	
+#Deplacement a la ligne suivante dans le seed
 		addi t2, t2, 4
 
 		beq t4, t5, end_increment_seed
 
 		jmpi loop_inc_seed_gsa
-
-
 
 	jmpi end_increment_seed
 
@@ -108,11 +121,6 @@ set_gsa:
 	stw a0, GSA0(t2)
 	ret
 ; END:set_gsa
-
-
-
-
-
 
 
 
@@ -539,78 +547,6 @@ get_input:
 
 
 
-;BEGIN:select_action
-
-select_action:
-
-	ldw t0, CURR_STATE(zero)
-	addi t1, zero, 1
-	addi t2, zero, 2
-	addi t3, zero, 4
-	addi t4, zero, 8
-
-	addi t5, zero, INIT
-	addi t6, zero, RAND
-	addi t7, zero, RUN
-
-
-;	addi s7, ra, 0
-
-	addi s1, ra,0
-
-	beq t0, t5, select_state_init
-	beq t0, t6, select_state_rand
-	beq t0, t7, select_state_run
-
-
-end_select_action:
-
-;	addi ra, s7, 0
-
-	addi ra,s1,0
-
-	ret
-
-	select_state_init:
-
-		beq a0, t1, increment_seed
-
-		beq a0, t2, end_select_action
-
-		beq a0, t3, change_steps
-		addi t4, zero, 8
-		beq a0, t4, change_steps
-		addi t4, zero, 16
-		beq a0, t4, change_steps
-
-		jmpi end_select_action
-
-	select_state_rand:
-
-		beq a0, t1, increment_seed
-
-		beq a1, t2, end_select_action
-
-		beq a0, t3, change_steps
-		addi t4, zero, 8
-		beq a0, t4, change_steps
-		addi t4, zero, 16
-		beq a0, t4, change_steps
-
-		jmpi end_select_action
-
-	select_state_run:
-
-		beq a0, t1, pause_game
-		beq a0, t2, change_speed
-		beq a0, t3, change_speed
-		addi t4, zero, 8
-		beq a0, t4, end_select_action
-		addi t4, zero, 16
-		beq a0, t4, random_gsa 
-
-		jmpi end_select_action
-;END:select_action
 
 
 
