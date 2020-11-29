@@ -28,7 +28,7 @@
     .equ PAUSED, 0x00
     .equ RUNNING, 0x01
 
-addi t0, zero, RUN 
+addi t0, zero, INIT 
 stw t0,CURR_STATE(zero)
 
 ;addi t1, zero, 12901	
@@ -200,76 +200,6 @@ set_gsa:
 
 
 
-; BEGIN:update_gsa
-;update_gsa:
-
- ;   addi s7, ra, 0
-
-	;addi t7,zero, PAUSED
-
-	;ldw t6, PAUSE(zero)
-
-	;beq t6,t7,end_update_gsa
-
-    ;addi s0, zero, N_GSA_LINES
-    ;andi s1, s1, 0
-    ;andi s5, s5, 0
-
-    ;update_line_loop:
-     ;   beq s1, s0, end_update_line_loop # if s1==8 we're done looping over the lines
-
-
-      ;  addi s2, zero, -1
-       ; addi s3, zero, N_GSA_COLUMNS - 1
-       ; addi s5, zero, 0
-
-
-        ;add a1, s1, zero # y coordinate
-        ;update_column_loop:
-         ;   beq s2, s3, end_update_column_loop
-
-          ;  slli s5, s5, 1 
-           ; andi a0, a0, 0
-           ; add a0, s3, zero # x coordinate
-            ;call find_neighbours
-
-            ;add a0, v0, zero
-            ;add a1, v1, zero
-            ;call cell_fate 
-
-            ;add s5, v0, s5 # building the line to pass as argument to set_gsa
-
-
-            ;addi s3, s3, -1
-            ;jmpi update_column_loop
-        ;end_update_column_loop:
-        ;add a0, s5, zero
-        ;add a1, s1, zero
-        ;ldw t7, GSA_ID(zero)
-        ;xori t7, t7, 1 # inverting the GSA_ID
-        ;stw t7, GSA_ID(zero)
-        ;call set_gsa
-        ;ldw t7, GSA_ID(zero)
-        ;xori t7, t7, 1 # inverting the GSA_ID
-        ;stw t7, GSA_ID(zero)
-
-        ;addi s1, s1, 1
-        ;jmpi update_line_loop
-    ;end_update_line_loop:
-
-    ;ldw t7, GSA_ID(zero)
-    ;xori t7, t7, 1 # inverting the GSA_ID
-    ;stw t7, GSA_ID(zero)
-
-	;end_update_gsa:
-    ;addi ra, s7, 0
-    ;ret
-; END:update_gsa
-
-
-
-
-
 ;BEGIN:change_speed
 change_speed:
 	# increasing 1
@@ -433,9 +363,6 @@ reset_game:
 
 
 
-
-
-
 ;BEGIN:pause_game
 pause_game:
 
@@ -450,8 +377,6 @@ pause_game:
 	ret
 	
 ;END:pause_game
-
-
 
 
 
@@ -473,19 +398,15 @@ change_steps:
 
 	ldw t0, CURR_STEP(zero)
 
-;	addi t7,zero,0 #carry set to 0
-
 
 	bne a0, zero, add_unit
 	check_tens:
 
 		bne a1, zero, add_tens
-	;	bne t7,zero, display_tens
 
 
 	check_hundreds:
 		bne a2, zero, add_hundreds
-	;	bne t7,zero, display_hundreds
 	
 
 	end_change_steps:
@@ -499,78 +420,23 @@ change_steps:
 		
 		addi t0, t0,1 
 
-		;display_unit:
-
-		;andi t3, t0, 0xF
-		;slli t4,t3,2	
-
-		;ldw t4, font_data(t4)
-
-		;addi t5, zero, 12
-
-		;stw t4, SEVEN_SEGS(t5) # units
-
-;		beq t3, zero, add_carry_tens #Check the carry	
-
-	;	addi t7, zero, 0
 
 		jmpi check_tens 
 
-	;add_carry_tens:
-		;	addi t7,zero, 1
-	;jmpi check_tens
 
 	add_tens:
 		addi t0,t0, 0x10
 
-		;display_tens:
 
-		;andi t3, t0, 0xF0
-		
-		;srli t3, t3, 4
-
-		#Chiffre récupéré dans t3
-
-		;slli t4, t3, 2
-		;ldw t4, font_data(t4)
-		;addi t5,zero, 8
-		
-
-		;stw t4, SEVEN_SEGS(t5) # hundreds
-
-
-		;beq t3, zero, add_carry_hundreds #Check the carry	
-
-		;addi t7, zero, 0
 
 		jmpi check_hundreds
-
-	;add_carry_hundreds:
-		;addi t7,zero, 1
-	;jmpi check_hundreds
 
 	add_hundreds:
 		addi t0,t0, 0x100
 
-	;	display_hundreds:
-
-		;add t6, t0, zero
-		
-		;andi t3, t6, 0xF00
-		;srli t3, t3, 8
-
-		#Chiffre récupéré dans t3
-
-		;slli t4, t3, 2
-		;ldw t4, font_data(t4)
-		;addi t5,zero, 4 
-		
-		;stw t4, SEVEN_SEGS(t5) # hundreds
 	
 		jmpi end_change_steps
 	
-	
-		;jmpi display_hundreds
 	
 ;END:change_steps
 
@@ -614,8 +480,6 @@ get_input:
 	sll t1, t1, t2
 	add v0, zero, t1 
 
-	#addi t1, zero, 0
-	
 	
 	stw zero, BUTTONS(t0) # clears the edgecapture register
 
@@ -633,21 +497,6 @@ get_input:
 		jmpi loop_bit_select
 
 ;END:get_input
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 font_data:
