@@ -66,8 +66,6 @@ main:
 
 	# algorithm of the game
 	call reset_game
-	#call update_gsa
-	#call mask
 	call get_input
 	add a0, zero, v0
 	addi s4, zero, 0 # done
@@ -75,15 +73,15 @@ main:
 	while:
 		beq s4, s6, end_while # if done==1 then end
 		addi a3, a0, 0
-		call select_action # a0 gets raped big time
+		call select_action # a0 gets overwritten big time
 		 #retrieve the og edgecapture 
 		addi a0, a3, 0
 		call update_state
 		#add s7, zero, a0 #saving a0 from the callees needed?
 		
-		#call update_gsa
-		#call mask
-		#call draw_gsa
+		call update_gsa
+		call mask
+		call draw_gsa
 		call wait
 		call decrement_step	
 		add s4, v0, zero
@@ -127,22 +125,24 @@ clear_leds:
 ;BEGIN:set_pixel
 set_pixel:
 
-	add t2,t2,a0
+
+add t2,zero,a0
+;	add t2,t2,a0
 	addi t3,zero,0
 	addi t4,zero,1
 	addi t5, zero, 8
 	addi t6, zero, 4
 
-
 	loop_position_LED_ARRAY:
-		sub t2,t2 ,t4  ; t3 is used to know in which led to display!
-		
+	
 		beq t2,t5,position_LED_ARRAY_incrementation
 		
 		beq t2,t6,position_LED_ARRAY_incrementation
 
+	decrement_loop_position_LED_ARRAY:
+		sub t2,t2 ,t4  ; t3 is used to know in which led to display!
+		
 		bne t2,zero, loop_position_LED_ARRAY
-
 
 	slli t0,a0,3
 	add t0,t0, a1
@@ -160,7 +160,7 @@ set_pixel:
 
 	position_LED_ARRAY_incrementation:
 		addi t3,t3,4
-		jmpi loop_position_LED_ARRAY
+		jmpi decrement_loop_position_LED_ARRAY
 
 ;END:set_pixel
 
@@ -698,14 +698,14 @@ cell_fate:
 	or t1, t2, t5 # a0 == 3 || a0 == 2
 	and t4, a1, t1 # 1 if ALIVE && (a0 == 2 || a0 == 3)
 
-	cmplti t6, a0, 2 # 1 if a0 < 2
-	cmpgei t7, a0, 4 # 1 if a0 > 3
-	or t1, t7, t6 # 1 if a0 < 2 || a0 > 3
-	and t1, t1, a1 # 1 if ALIVE && (above line)
-	xori t1, t1, 1
+	;cmplti t6, a0, 2 # 1 if a0 < 2
+	;cmpgei t7, a0, 4 # 1 if a0 > 3
+	;or t1, t7, t6 # 1 if a0 < 2 || a0 > 3
+	;and t1, t1, a1 # 1 if ALIVE && (above line)
+	;xori t1, t1, 1
 	
-	or t1, t1, t4
-	or v0, t1, t0 # outputs if the cell is alive or dead
+	;or t1, t1, t4
+	or v0, t4, t0 # outputs if the cell is alive or dead
 
 	ret
 
@@ -803,29 +803,25 @@ update_gsa:
 
 	beq t6,t7,end_update_gsa
 
-
-
-
     addi s0, zero, N_GSA_LINES
     andi s1, s1, 0
     andi s5, s5, 0
 
     update_line_loop:
         beq s1, s0, end_update_line_loop # if s1==8 we're done looping over the lines
-
-
         addi s2, zero, -1
         addi s3, zero, N_GSA_COLUMNS - 1
         addi s5, zero, 0
 
-
-        add a1, s1, zero # y coordinate
+       ; add a1, s1, zero # y coordinate
         update_column_loop:
             beq s2, s3, end_update_column_loop
 
             slli s5, s5, 1 
             andi a0, a0, 0
             add a0, s3, zero # x coordinate
+		 	add a1, s1, zero # y coordinate
+
             call find_neighbours
 
             add a0, v0, zero
@@ -833,8 +829,7 @@ update_gsa:
             call cell_fate 
 
             add s5, v0, s5 # building the line to pass as argument to set_gsa
-
-
+		
             addi s3, s3, -1
             jmpi update_column_loop
         end_update_column_loop:
