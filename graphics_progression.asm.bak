@@ -75,11 +75,13 @@ addi t2,zero,1
 
 stw t2,PAUSE(zero)
 
+main:
 
 call update_gsa
 
 call draw_gsa
 
+jmpi main
 
 break
 
@@ -109,26 +111,22 @@ update_gsa:
         addi s3, zero, N_GSA_COLUMNS - 1
         addi s5, zero, 0
 
-        add a1, s1, zero # y coordinate
+       ; add a1, s1, zero # y coordinate
         update_column_loop:
             beq s2, s3, end_update_column_loop
 
-           ; slli s5, s5, 1 
+            slli s5, s5, 1 
             andi a0, a0, 0
             add a0, s3, zero # x coordinate
-            call find_neighbours
+		 	add a1, s1, zero # y coordinate
 
-		  ;addi v0,zero,
+            call find_neighbours
 
             add a0, v0, zero
             add a1, v1, zero
             call cell_fate 
 
-			;addi v0,zero,
-
-           ; add s5, v0, s5 # building the line to pass as argument to set_gsa
-			
-			addi s5,s5,1
+            add s5, v0, s5 # building the line to pass as argument to set_gsa
 		
             addi s3, s3, -1
             jmpi update_column_loop
@@ -168,7 +166,7 @@ find_neighbours:
 	srl t2, t2, a0 # get the cell at coord x in the line 
 	andi v1, t2, 1 # outputs the state of the examined cell
 
-	# computing the nb of live neighbours
+	# computing the nb of alive neighbours
 	andi v0, v0, 0
 	andi t1, t1, 0
 	addi t1, t1, -1
@@ -250,14 +248,16 @@ cell_fate:
 	or t1, t2, t5 # a0 == 3 || a0 == 2
 	and t4, a1, t1 # 1 if ALIVE && (a0 == 2 || a0 == 3)
 
-	cmplti t6, a0, 2 # 1 if a0 < 2
-	cmpgei t7, a0, 4 # 1 if a0 > 3
-	or t1, t7, t6 # 1 if a0 < 2 || a0 > 3
-	and t1, t1, a1 # 1 if ALIVE && (above line)
-	xori t1, t1, 1
+	;cmplti t6, a0, 2 # 1 if a0 < 2
+	;cmpgei t7, a0, 4 # 1 if a0 > 3
+;	or t1, t7, t6 # 1 if a0 < 2 || a0 > 3
+
+;	and t1, t1, a1 # 1 if ALIVE && (above line)
+;	xori t1, t1, 1
 	
-	or t1, t1, t4
-	or v0, t1, t0 # outputs if the cell is alive or dead
+	;or t1, t1, t4
+	
+	or v0, t4, t0 # outputs if the cell is alive or dead
 
 	ret
 
