@@ -51,19 +51,37 @@ addi a0,zero,5
 addi a1, zero, 3
 call set_pixel
 
-main:
+addi t0,zero,2
 
-;call clear_leds
-
-update_gsa 
+stw t0,SEED(zero)
 
 
+stw zero, GSA_ID(zero) # GSA_ID is set to 0
+addi t5, zero, N_GSA_LINES
+addi t6, zero, 0
+stw zero, GSA_ID(zero) # GSA_ID is set to 0
+loop_set_gsa0:
+	beq t6, t5, end_set_gsa0
+	slli t7, t6, 2
+
+	ldw a0, seed2(t7)
+	addi a1, t6, 0
+	call set_gsa
+	addi t6, t6, 1
+	jmpi loop_set_gsa0
+end_set_gsa0:
+
+addi t2,zero,1
+
+stw t2,PAUSE(zero)
 
 
-jmpi main
+call update_gsa
+
+call draw_gsa
 
 
-
+break
 
 
 
@@ -87,12 +105,9 @@ update_gsa:
 
     update_line_loop:
         beq s1, s0, end_update_line_loop # if s1==8 we're done looping over the lines
-
-
         addi s2, zero, -1
         addi s3, zero, N_GSA_COLUMNS - 1
         addi s5, zero, 0
-
 
         add a1, s1, zero # y coordinate
         update_column_loop:
@@ -101,19 +116,19 @@ update_gsa:
             slli s5, s5, 1 
             andi a0, a0, 0
             add a0, s3, zero # x coordinate
-          ;  call find_neighbours
+            call find_neighbours
 
 		  ;addi v0,zero,
 
-
             add a0, v0, zero
             add a1, v1, zero
-           ; call cell_fate 
+            call cell_fate 
 
 			;addi v0,zero,
 
             add s5, v0, s5 # building the line to pass as argument to set_gsa
 			
+			;addi s5,s5,1
 		
             addi s3, s3, -1
             jmpi update_column_loop
@@ -140,6 +155,191 @@ update_gsa:
     addi ra, s7, 0
     ret
 ; END:update_gsa
+
+; BEGIN:find_neighbours
+find_neighbours:
+
+	# finding the state of the examined cell
+	ldw t0, GSA_ID(zero)
+	slli t0, t0, 5
+	slli t1, a1, 2
+	add t1, t1, t0 # address in the GSA
+	ldw t2, GSA0(t1)
+	srl t2, t2, a0 # get the cell at coord x in the line 
+	andi v1, t2, 1 # outputs the state of the examined cell
+
+	# computing the nb of live neighbours
+	andi v0, v0, 0
+	andi t1, t1, 0
+	addi t1, t1, -1
+	andi t7, t7, 0
+	addi t7, t7, 2
+	loop_neighbours:
+		beq t1, t7, end_loop_neighbours # done looping through the 3 neighbour lines if t1==2 
+
+		add t2, a1, t1 # current y	
+		andi t2, t2, N_GSA_LINES - 1 # current y mod 8
+		
+		euclidian_mod_8:
+			cmplti t6, t2, N_GSA_LINES # x+1 < 8 ?
+			cmpgei t5, t2, 0 # x+1 >= 0 ?
+			beq t6, t5, end_mod_8
+			beq t5, zero, neg_8
+			beq t6, zero, pos_8
+			pos_8:
+				addi t2, t2, -N_GSA_LINES
+				jmpi euclidian_mod_8
+			neg_8:
+				addi t2, t2, N_GSA_LINES
+				jmpi euclidian_mod_8
+		end_mod_8:
+		slli t2, t2, 2
+		add t2, t2, t0 # address to access current GSA line
+
+		
+		addi t4, zero, -1
+		loop_x:
+			beq t4, t7, end_loop_x 
+
+			add t3, a0, t4 # current x
+
+			euclidian_mod_12:
+				cmplti t6, t3, N_GSA_COLUMNS # x+1 < 12 ?
+				cmpgei t5, t3, 0 # x+1 >= 0 ?
+				beq t6, t5, end_mod_12
+				beq t5, zero, neg_12
+				beq t6, zero, pos_12
+				pos_12:
+					addi t3, t3, -N_GSA_COLUMNS
+					jmpi euclidian_mod_12
+				neg_12:
+					addi t3, t3, N_GSA_COLUMNS
+					jmpi euclidian_mod_12
+			end_mod_12:
+
+			ldw t5, GSA0(t2) # line at current y mod 8
+			srl t5, t5, t3 # cell at current x mod 12
+			andi t5, t5, 1
+			add v0, v0, t5 # updating the sum of living neighbours
+
+
+
+			addi t4, t4, 1
+			jmpi loop_x
+		end_loop_x:
+
+		addi t1, t1, 1
+		jmpi loop_neighbours
+	end_loop_neighbours:
+
+	sub v0, v0, v1 # we subtract the examined cell as it was counted in the loops
+	ret
+
+; END:find_neighbours
+
+
+; BEGIN:cell_fate
+cell_fate:
+	
+	cmpeqi t3, a0, 3 # 1 if a0 == 3
+	xori t1, a1, 1
+	and t0, t1, t3 # 1 if DEAD && a0 == 3
+
+	cmpeqi t5, a0, 3 # 1 if a0 == 3
+	cmpeqi t2, a0, 2 # 1 if a0 == 2
+	or t1, t2, t5 # a0 == 3 || a0 == 2
+	and t4, a1, t1 # 1 if ALIVE && (a0 == 2 || a0 == 3)
+
+	cmplti t6, a0, 2 # 1 if a0 < 2
+	cmpgei t7, a0, 4 # 1 if a0 > 3
+	or t1, t7, t6 # 1 if a0 < 2 || a0 > 3
+	and t1, t1, a1 # 1 if ALIVE && (above line)
+	xori t1, t1, 1
+	
+	or t1, t1, t4
+	or v0, t1, t0 # outputs if the cell is alive or dead
+
+	ret
+
+; END:cell_fate
+
+
+; BEGIN:draw_gsa
+draw_gsa:
+	ldw t0, GSA_ID(zero)
+	slli t0, t0, 5
+
+	addi t1, zero, 3
+	addi t2, zero, 0 # loopa increment
+
+loopa:
+	beq t2, t1, enda # if t2 == 3 we are done
+	andi t3, t3, 0 # loopb increment
+	addi t4, t4, 8
+	
+	addi t5, zero, 0 
+	slli s1, t2, 2
+	
+	loopb:
+		beq t3, t4, endb # if t3 == 8 we are done 
+		
+		slli t6, t3, 2 # start computing the line address
+		add t6, t6, t0 # line address
+		ldw t7, GSA0(t6) # get line
+		srl t7, t7, s1
+		andi t6, t7, 0x0001 # get bit 0
+		sll t6, t6, t3 # shifting in terms of the line we're in
+		or t5, t5, t6 # store in t5 temporary LED word
+
+		srli t7, t7, 1 # get bit 1
+		andi t6, t7, 0x0001
+		sll t6, t6, t3
+		slli t6, t6, 8
+		or t5, t5, t6
+
+		srli t7, t7, 1 # get bit 2
+		andi t6, t7, 0x0001
+		sll t6, t6, t3
+		slli t6, t6, 16
+		or t5, t5, t6
+
+		srli t7, t7, 1 # get bit 3
+		andi t6, t7, 0x0001
+		sll t6, t6, t3
+		slli t6, t6, 24
+		or t5, t5, t6
+
+		slli t6, t2, 2 # pointer of the LED array
+		stw t5, LEDS(t6) # store the word in the current LED array
+		
+		
+		addi t3, t3, 1
+		jmpi loopb
+	endb:
+	addi t2, t2, 1 # add 1 to t2
+	jmpi loopa # jump back to the top
+enda:
+
+	ret
+; END:draw_gsa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ;BEGIN:clear_leds
@@ -171,6 +371,7 @@ clear_leds:
 	ret
 
 ;END:clear_leds
+
 
 ;BEGIN:set_pixel
 set_pixel:
