@@ -28,16 +28,18 @@
     .equ PAUSED, 0x00
     .equ RUNNING, 0x01
 
-addi t0, zero, RUN 
+addi t0, zero, INIT 
 stw t0,CURR_STATE(zero)
 
-addi t1, zero, 12901	
-stw t1, CURR_STEP(zero)
+;addi t1, zero, 12901	
+;stw t1, CURR_STEP(zero)
 
 main:
 
-;	call get_input
-	;add a0, v0, zero
+	call get_input
+	add a0, v0, zero
+
+	call change_steps
 
 	call decrement_step
 
@@ -57,7 +59,6 @@ decrement_step:
 	show_the_steps:
 
 	ldw t2, CURR_STEP(zero)
-
 
 	andi t4, t2, 0xF #extracting the units!
 	andi t5, t2, 0xF0 	 #extracting the tens!
@@ -472,19 +473,19 @@ change_steps:
 
 	ldw t0, CURR_STEP(zero)
 
-	addi t7,zero,0 #carry set to 0
+;	addi t7,zero,0 #carry set to 0
 
 
 	bne a0, zero, add_unit
 	check_tens:
 
 		bne a1, zero, add_tens
-		bne t7,zero, display_tens
+	;	bne t7,zero, display_tens
 
 
 	check_hundreds:
 		bne a2, zero, add_hundreds
-		bne t7,zero, display_hundreds
+	;	bne t7,zero, display_hundreds
 	
 
 	end_change_steps:
@@ -498,82 +499,78 @@ change_steps:
 		
 		addi t0, t0,1 
 
-	
+		;display_unit:
 
-		display_unit:
+		;andi t3, t0, 0xF
+		;slli t4,t3,2	
 
-		andi t3, t0, 0xF
-		slli t4,t3,2	
+		;ldw t4, font_data(t4)
 
-	
+		;addi t5, zero, 12
 
-		ldw t4, font_data(t4)
+		;stw t4, SEVEN_SEGS(t5) # units
 
-		addi t5, zero, 12
+;		beq t3, zero, add_carry_tens #Check the carry	
 
-		stw t4, SEVEN_SEGS(t5) # units
-
-		beq t3, zero, add_carry_tens #Check the carry	
-
-		addi t7, zero, 0
+	;	addi t7, zero, 0
 
 		jmpi check_tens 
 
-	add_carry_tens:
-			addi t7,zero, 1
-	jmpi check_tens
+	;add_carry_tens:
+		;	addi t7,zero, 1
+	;jmpi check_tens
 
 	add_tens:
 		addi t0,t0, 0x10
 
-		display_tens:
+		;display_tens:
 
-		andi t3, t0, 0xF0
+		;andi t3, t0, 0xF0
 		
-		srli t3, t3, 4
+		;srli t3, t3, 4
 
 		#Chiffre récupéré dans t3
 
-		slli t4, t3, 2
-		ldw t4, font_data(t4)
-		addi t5,zero, 8
+		;slli t4, t3, 2
+		;ldw t4, font_data(t4)
+		;addi t5,zero, 8
 		
 
-		stw t4, SEVEN_SEGS(t5) # hundreds
+		;stw t4, SEVEN_SEGS(t5) # hundreds
 
 
-		beq t3, zero, add_carry_hundreds #Check the carry	
+		;beq t3, zero, add_carry_hundreds #Check the carry	
 
-		addi t7, zero, 0
+		;addi t7, zero, 0
 
 		jmpi check_hundreds
 
-	add_carry_hundreds:
-		addi t7,zero, 1
-	jmpi check_hundreds
+	;add_carry_hundreds:
+		;addi t7,zero, 1
+	;jmpi check_hundreds
 
 	add_hundreds:
 		addi t0,t0, 0x100
 
-		display_hundreds:
+	;	display_hundreds:
 
-		add t6, t0, zero
+		;add t6, t0, zero
 		
-		andi t3, t6, 0xF00
-		srli t3, t3, 8
+		;andi t3, t6, 0xF00
+		;srli t3, t3, 8
 
 		#Chiffre récupéré dans t3
 
-		slli t4, t3, 2
-		ldw t4, font_data(t4)
-		addi t5,zero, 4 
+		;slli t4, t3, 2
+		;ldw t4, font_data(t4)
+		;addi t5,zero, 4 
 		
-		stw t4, SEVEN_SEGS(t5) # hundreds
+		;stw t4, SEVEN_SEGS(t5) # hundreds
 	
 		jmpi end_change_steps
 	
 	
-		jmpi display_hundreds
+		;jmpi display_hundreds
 	
 ;END:change_steps
 
