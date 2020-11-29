@@ -81,10 +81,9 @@ main:
 		call update_state
 		#add s7, zero, a0 #saving a0 from the callees needed?
 		
-		call update_gsa
-		call mask
-		call draw_gsa
-		call change_steps
+		#call update_gsa
+		#call mask
+		#call draw_gsa
 		call wait
 		call decrement_step	
 		add s4, v0, zero
@@ -650,7 +649,7 @@ end_select_action:
 
 		beq a0, t1, increment_seed
 
-		beq a0, t2, end_select_action
+		beq a0, t2, pause_game
 
 		beq a0, t3, change_steps
 		addi t4, zero, 8
@@ -664,7 +663,7 @@ end_select_action:
 
 		beq a0, t1, increment_seed
 
-		beq a1, t2, end_select_action
+		beq a1, t2, pause_game
 
 		beq a0, t3, change_steps
 		addi t4, zero, 8
@@ -999,6 +998,8 @@ end_decrement_step:
 	ret
 
 	it_is_running:
+		ldw t2, PAUSE(zero)
+        beq t2,zero, show_the_steps
 
 		ldw t2, CURR_STEP(zero)
 
