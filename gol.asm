@@ -1,4 +1,4 @@
-        ;;    game state memory location
+    ;;    game state memory location
     .equ CURR_STATE, 0x1000              ; current game state
     .equ GSA_ID, 0x1004                     ; gsa currently in use for drawing
     .equ PAUSE, 0x1008                     ; is the game paused or running
@@ -73,7 +73,7 @@ main:
 	addi s4, zero, 0 # done
 	addi s6, zero, 1
 	while:
-		#beq s4, s6, end_while # if done==1 then end
+		beq s4, s6, end_while # if done==1 then end
 		addi a3, a0, 0
 		call select_action # a0 gets raped big time
 		 #retrieve the og edgecapture 
@@ -86,7 +86,7 @@ main:
 		call draw_gsa
 		call change_steps
 		call wait
-		#call decrement_step	
+		call decrement_step	
 		add s4, v0, zero
 		call get_input
 		add a0, zero, v0
@@ -365,19 +365,24 @@ change_steps:
 
 	ldw t0, CURR_STEP(zero)
 
+;	addi t7,zero,0 #carry set to 0
+
 
 	bne a0, zero, add_unit
 	check_tens:
 
 		bne a1, zero, add_tens
+	;	bne t7,zero, display_tens
 
 
 	check_hundreds:
 		bne a2, zero, add_hundreds
+	;	bne t7,zero, display_hundreds
 	
 
 	end_change_steps:
 		
+		andi t0, t0, 0xFFF
 		stw t0, CURR_STEP(zero)
 
 		ret
@@ -386,66 +391,78 @@ change_steps:
 		
 		addi t0, t0,1 
 
-		display_unit:
+		;display_unit:
 
-		andi t3, t0, 0xF
-		slli t4,t3,2		
+		;andi t3, t0, 0xF
+		;slli t4,t3,2	
 
-		ldw t4, font_data(t4)
+		;ldw t4, font_data(t4)
 
-		addi t5, zero, 12
+		;addi t5, zero, 12
 
-		stw t4, SEVEN_SEGS(t5) # units
+		;stw t4, SEVEN_SEGS(t5) # units
+
+;		beq t3, zero, add_carry_tens #Check the carry	
+
+	;	addi t7, zero, 0
 
 		jmpi check_tens 
 
+	;add_carry_tens:
+		;	addi t7,zero, 1
+	;jmpi check_tens
 
 	add_tens:
-		
 		addi t0,t0, 0x10
 
-		display_tens:
+		;display_tens:
+
+		;andi t3, t0, 0xF0
 		
-		andi t3, t0, 0xF0
-		srli t3, t3, 4
+		;srli t3, t3, 4
 
 		#Chiffre récupéré dans t3
 
-		slli t4, t3, 2
-		ldw t4, font_data(t4)
-		addi t5,zero, 8
+		;slli t4, t3, 2
+		;ldw t4, font_data(t4)
+		;addi t5,zero, 8
 		
 
-		stw t4, SEVEN_SEGS(t5) # hundreds
+		;stw t4, SEVEN_SEGS(t5) # hundreds
 
+
+		;beq t3, zero, add_carry_hundreds #Check the carry	
+
+		;addi t7, zero, 0
 
 		jmpi check_hundreds
 
-
+	;add_carry_hundreds:
+		;addi t7,zero, 1
+	;jmpi check_hundreds
 
 	add_hundreds:
 		addi t0,t0, 0x100
 
-		display_hundreds:
+	;	display_hundreds:
 
-		add t6, t0, zero
+		;add t6, t0, zero
 		
-		andi t3, t6, 0xF00
-		srli t3, t3, 8
+		;andi t3, t6, 0xF00
+		;srli t3, t3, 8
 
 		#Chiffre récupéré dans t3
 
-		slli t4, t3, 2
-		ldw t4, font_data(t4)
-		addi t5,zero, 4 
+		;slli t4, t3, 2
+		;ldw t4, font_data(t4)
+		;addi t5,zero, 4 
 		
-
-		stw t4, SEVEN_SEGS(t5) # hundreds
+		;stw t4, SEVEN_SEGS(t5) # hundreds
 	
 		jmpi end_change_steps
 	
 	
-		jmpi display_hundreds
+		;jmpi display_hundreds
 	
 ;END:change_steps
 
@@ -951,6 +968,32 @@ decrement_step:
 
 	beq t0, t1, it_is_running  
 
+	show_the_steps:
+
+	ldw t2, CURR_STEP(zero)
+
+	andi t4, t2, 0xF #extracting the units!
+	andi t5, t2, 0xF0 	 #extracting the tens!
+	srli t5,t5, 4
+	andi t6, t2, 0xF00 	  #extracting the hundreds!
+	srli t6,t6, 8
+
+	slli t7, t4, 2
+	ldw t7, font_data(t7) #get the unit's font
+	addi t1,zero, 12
+	stw t7, SEVEN_SEGS(t1) #display the units
+
+	slli t7, t5, 2
+	ldw t7, font_data(t7) #get the ten's font
+	addi t1,zero, 8
+	stw t7, SEVEN_SEGS(t1) #display the tens
+
+	slli t7, t6, 2
+	ldw t7, font_data(t7) #get the hundred's font
+	addi t1,zero, 4
+	stw t7, SEVEN_SEGS(t1) #display the hundreds
+
+
 end_decrement_step:
 
 	ret
@@ -961,25 +1004,20 @@ end_decrement_step:
 
 		beq t2, zero, current_step_null
 
+		addi t3,zero,1
+		sub t2,t2,t3
 
-		slli t7, t2, 2
-
-		ldw t3, font_data(t7)
-
-		stw t3, SEVEN_SEGS(zero)
-
-		addi t5,zero,1
-		sub t2,t2,t5
+		andi t2, t2, 0xFFF
 
 		stw t2,CURR_STEP(zero)
 
-		jmpi end_decrement_step
+	jmpi show_the_steps
 
 	current_step_null:
 
 		addi v0, zero, 1
 
-		jmpi end_decrement_step
+		jmpi show_the_steps
  
 ;END:decrement_step
 
