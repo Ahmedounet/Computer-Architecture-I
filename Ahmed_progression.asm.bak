@@ -28,19 +28,99 @@
     .equ PAUSED, 0x00
     .equ RUNNING, 0x01
 
+addi t0, zero, RUN 
+stw t0,CURR_STATE(zero)
+
+addi t1, zero, 123901	
+stw t1, CURR_STEP(zero)
 
 main:
 
-	call get_input
-	add a0, v0, zero
+;	call get_input
+	;add a0, v0, zero
 
-	addi t0, t0, 0
+	call decrement_step
 
-	stw t0, SEED(zero)
-
-	call change_steps
-	
 jmpi main
+
+;BEGIN:decrement_step
+
+decrement_step:
+
+	addi v0,zero,0
+	ldw t0,CURR_STATE(zero)
+
+	addi t1,zero,RUN
+
+	beq t0, t1, it_is_running  
+
+	show_the_steps:
+
+	ldw t2, CURR_STEP(zero)
+
+
+	andi t4, t2, 0xF #extracting the units!
+	andi t5, t2, 0xF0 	 #extracting the tens!
+	srli t5,t5, 4
+	andi t6, t2, 0xF00 	  #extracting the hundreds!
+	srli t6,t6, 8
+
+	slli t7, t4, 2
+	ldw t7, font_data(t7) #get the unit's font
+	addi t1,zero, 12
+	stw t7, SEVEN_SEGS(t1) #display the units
+
+	slli t7, t5, 2
+	ldw t7, font_data(t7) #get the ten's font
+	addi t1,zero, 8
+	stw t7, SEVEN_SEGS(t1) #display the tens
+
+	slli t7, t6, 2
+	ldw t7, font_data(t7) #get the hundred's font
+	addi t1,zero, 4
+	stw t7, SEVEN_SEGS(t1) #display the hundreds
+
+
+end_decrement_step:
+
+	ret
+
+	it_is_running:
+
+		ldw t2, CURR_STEP(zero)
+
+		beq t2, zero, current_step_null
+
+		addi t3,zero,1
+		sub t2,t2,t3
+
+		andi t2, t2, 0xFFF
+
+		stw t2,CURR_STEP(zero)
+
+	jmpi show_the_steps
+
+	current_step_null:
+
+		addi v0, zero, 1
+
+		jmpi show_the_steps
+ 
+;END:decrement_step
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ;BEGIN:increment_seed
@@ -410,8 +490,6 @@ change_steps:
 	end_change_steps:
 		
 		andi t0, t0, 0xFFF
-
-
 		stw t0, CURR_STEP(zero)
 
 		ret
