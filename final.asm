@@ -65,6 +65,26 @@ main:
 
 
 	# algorithm of the game
+	addi t0, zero, 0
+	addi t1, zero, 0
+	addi t2, zero, 0
+	addi t3, zero, 0
+	addi t4, zero, 0
+	addi t5, zero, 0
+	addi t6, zero, 0
+	addi t7, zero, 0
+	addi s0, zero, 0
+	addi s1, zero, 0
+	addi s2, zero, 0
+	addi s3, zero, 0
+	addi s4, zero, 0
+	addi s5, zero, 0
+	addi s6, zero, 0
+	addi s7, zero, 0
+	addi a0, zero, 0
+	addi a1, zero, 0
+	addi a2, zero, 0
+	addi a3, zero, 0
 	call reset_game
 	call get_input
 	add a0, zero, v0
@@ -679,7 +699,7 @@ end_select_action:
 		beq a0, t2, change_speed
 		beq a0, t3, change_speed
 		addi t4, zero, 8
-		beq a0, t4, end_select_action
+		beq a0, t4, reset_game
 		addi t4, zero, 16
 		beq a0, t4, random_gsa 
 
@@ -1025,7 +1045,9 @@ reset_game:
 	;stw ra, 0(sp)
 	
 	addi s7, ra, 0
-
+	call clear_leds
+	addi t1, zero, INIT
+	stw t1, CURR_STATE(zero)
 
 	addi t1, zero, 1
 
