@@ -29,61 +29,60 @@
     .equ RUNNING, 0x01
 
 
-addi a0,zero,4
-addi a1, zero, 1
+;addi a0,zero,4
+;addi a1, zero, 1
 
-call set_pixel
+;call set_pixel
 
-addi a0,zero,5
-addi a1, zero, 2
+;addi a0,zero,5
+;addi a1, zero, 2
 
-call set_pixel
+;call set_pixel
 
-addi a0,zero,3
-addi a1, zero, 3
+;addi a0,zero,3
+;addi a1, zero, 3
 
-call set_pixel
-addi a0,zero,4
-addi a1, zero, 3
-call set_pixel
+;call set_pixel
+;addi a0,zero,4
+;addi a1, zero, 3
+;call set_pixel
 
-addi a0,zero,5
-addi a1, zero, 3
-call set_pixel
+;addi a0,zero,5
+;addi a1, zero, 3
+;call set_pixel
 
-addi t0,zero,2
+;addi t0,zero,2
 
-stw t0,SEED(zero)
+;stw t0,SEED(zero)
 
 
-stw zero, GSA_ID(zero) # GSA_ID is set to 0
-addi t5, zero, N_GSA_LINES
-addi t6, zero, 0
-stw zero, GSA_ID(zero) # GSA_ID is set to 0
-loop_set_gsa0:
-	beq t6, t5, end_set_gsa0
-	slli t7, t6, 2
+;stw zero, GSA_ID(zero) # GSA_ID is set to 0
+;addi t5, zero, N_GSA_LINES
+;addi t6, zero, 0
+;stw zero, GSA_ID(zero) # GSA_ID is set to 0
+;loop_set_gsa0:
+	;beq t6, t5, end_set_gsa0
+	;slli t7, t6, 2
 
-	ldw a0, seed2(t7)
-	addi a1, t6, 0
-	call set_gsa
-	addi t6, t6, 1
-	jmpi loop_set_gsa0
-end_set_gsa0:
+	;ldw a0, seed2(t7)
+	;addi a1, t6, 0
+	;call set_gsa
+	;addi t6, t6, 1
+	;jmpi loop_set_gsa0
+;end_set_gsa0:
 
-addi t2,zero,1
+;addi t2,zero,1
 
-stw t2,PAUSE(zero)
+;stw t2,PAUSE(zero)
 
 main:
 
-call update_gsa
-
-call draw_gsa
-
-jmpi main
+addi a0, zero, 2
+addi a1, zero,7
+call set_pixel
 
 break
+
 
 
 
@@ -102,8 +101,8 @@ update_gsa:
 	beq t6,t7,end_update_gsa
 
     addi s0, zero, N_GSA_LINES
-    andi s1, s1, 0
-    andi s5, s5, 0
+    ;andi s1, s1, 6
+    ;andi s5, s5, 4
 
     update_line_loop:
         beq s1, s0, end_update_line_loop # if s1==8 we're done looping over the lines
@@ -385,7 +384,8 @@ add t2,zero,a0
 	addi t6, zero, 4
 
 	loop_position_LED_ARRAY:
-	
+		
+		beq t2,zero, get_out_of_the_loop
 		beq t2,t5,position_LED_ARRAY_incrementation
 		
 		beq t2,t6,position_LED_ARRAY_incrementation
@@ -395,6 +395,7 @@ add t2,zero,a0
 		
 		bne t2,zero, loop_position_LED_ARRAY
 
+get_out_of_the_loop:
 	slli t0,a0,3
 	add t0,t0, a1
 	
