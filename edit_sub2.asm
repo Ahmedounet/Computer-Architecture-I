@@ -531,93 +531,93 @@ end_select_action:
 
 	select_state_init:
 
-		andi t2,a0, 0x10000 ;MSB=16
+		andi t2,a0, 16 ;MSB=16
 		addi t4, zero, 16
 
 		addi a2,zero,0
 		addi a1,zero,0
-		addi t7, zero, a0
+		add t7, zero, a0
 		srli a0,t2,4
 		beq t2, t4, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
-		andi t2,a0, 0x1000	;MSB= 8
+		andi t2,a0, 8	;MSB= 8
 		addi t4, zero, 8
 		addi a2,zero,0
 		srli a1,t2,3
-		addi t7, zero, a0
+		add t7, zero, a0
 		addi a0,zero,0
 		beq t2, t4, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
-		andi t2,a0, 0x100  ;MSB=4
+		andi t2,a0, 4  ;MSB=4
 		srli a2,t2,2
 		addi a1,zero,0
-		addi t7,zero,a0
+		add t7,zero,a0
 		addi a0,zero,0
 		beq t2, t3, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
-		andi t2,a0, 0x1  ;MSB=1
+		andi t2,a0, 1  ;MSB=1
 		beq t2, t1, increment_seed
 
 		jmpi end_select_action
 
 	select_state_rand:
 
-		andi t2,a0, 0x10000 ;MSB=16
+		andi t2,a0, 16 ;MSB=16
 		addi t4, zero, 16
 		addi a2,zero,0
 		addi a1,zero,0
-		addi t7, zero, a0
+		add t7, zero, a0
 		srli a0,t2,4
 		beq t2, t4, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
-		andi t2,a0, 0x1000	;MSB= 8
+		andi t2,a0, 8	;MSB= 8
 		addi t4, zero, 8
 		addi a2,zero,0
 		srli a1,t2,3
-		addi t7, zero, a0
+		add t7, zero, a0
 		addi a0,zero,0
 		beq t2, t4, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
-		andi t2,a0, 0x100  ;MSB=4
+		andi t2,a0, 4  ;MSB=4
 		srli a2,t2,2
 		addi a1,zero,0
-		addi t7,zero,a0
+		add t7,zero,a0
 		addi a0,zero,0
 		beq t2, t3, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
-		andi t2,a0, 0x1
+		andi t2,a0, 1
 		beq t2, t1, increment_seed
 
 		jmpi end_select_action
 
 	select_state_run:
 
-		andi t5,a0, 0x10000
+		andi t5,a0, 16
 		addi t4, zero, 16
 		beq t5, t4, random_gsa 
 
-		andi t5,a0, 0x1000
+		andi t5,a0, 8
 		addi t4, zero, 8
 		beq t5, t4, reset_game
 		
-		andi t5,a0, 0x100
+		andi t5,a0, 4
 		beq t5, t3, change_speed
 		
-		andi t5,a0, 0x10
+		andi t5,a0, 2
 		beq t5, t2, change_speed
 		
-		andi t5,a0, 0x1
+		andi t5,a0, 1
 		beq t5, t1, pause_game
 
 		jmpi end_select_action
