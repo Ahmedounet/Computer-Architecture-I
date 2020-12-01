@@ -29,40 +29,6 @@
     .equ RUNNING, 0x01
 
 main:
-	#addi a0, zero, 1
-	#addi a1, zero, 1
-	#call set_gsa
-	#call mask
-	#call draw_gsa
-	#call random_gsa
-	#addi a0, zero, 9
-	#addi a1, zero, 1
-	#call cell_fate
-	#call find_neighbours
-	#call reset_game
-	#call draw_gsa
-	#addi s4, zero, 15
-	#addi a3, zero, 1
-	
-
-	#loop_test:
-	#	beq s4, zero, main
-	#	call get_input
-	#	andi s6, v0, 1
-	#	beq s6, a3, one_step
-
-	#end_loop_test:
-	#	jmpi loop_test
-
-	#one_step:	
-	#		stw s4, CURR_STEP(zero)
-			#call update_gsa	
-			#call draw_gsa
-			#call wait
-	#		addi s4, s4, -1
-	#		jmpi loop_test
-
-
 
 	# algorithm of the game
 	addi t0, zero, 0
@@ -1088,9 +1054,6 @@ reset_game:
 
 	addi t1, zero, 1
 	stw t1, SPEED(zero) # speed is set to 1
-
-	;ldw ra, 0(sp)
-	;addi sp,sp,4
 
 	addi ra, s7, 0
 

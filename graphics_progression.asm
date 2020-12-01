@@ -77,9 +77,11 @@
 
 main:
 
-addi a0, zero, 2
+addi a0, zero, 4
 addi a1, zero,7
 call set_pixel
+
+call clear_leds
 
 break
 
@@ -326,48 +328,22 @@ enda:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ;BEGIN:clear_leds
 clear_leds:
 
-	addi t1, zero, 0
-	addi t2, zero, 12 ;Upper limit size of leds array! 
+addi t1, zero ,4
 
-	addi t3, zero, 0x00
+addi t2, zero, 8
+stw zero ,LEDS(zero)
 
-	slli t4,t3,8
-	slli t5,t3,16
-	slli t6,t3,24
+stw zero ,LEDS(t1)
 
-
-	or t3,t3,t4
-	or t3,t3,t5
-	or t3,t3,t6
+stw zero,LEDS (t2)
 
 
-	loop_clear:
-		;stw zero,LEDS(t1)
+end_clear_leds:
 
-		stw  t3,LEDS(t1)
-	;	slli LEDS(t1),LEDS(t1) , 1
-		
-		addi t1,t1,4
-		bne t1,t2,loop_clear
-	ret
+ret
 
 ;END:clear_leds
 
