@@ -30,6 +30,41 @@
 
 ; BEGIN:main
 main:
+	#addi a0, zero, 1
+	#addi a1, zero, 1
+	#call set_gsa
+	#call mask
+	#call draw_gsa
+	#call random_gsa
+	#addi a0, zero, 9
+	#addi a1, zero, 1
+	#call cell_fate
+	#call find_neighbours
+	#call reset_game
+	#call draw_gsa
+	#addi s4, zero, 15
+	#addi a3, zero, 1
+	
+
+	#loop_test:
+	#	beq s4, zero, main
+	#	call get_input
+	#	andi s6, v0, 1
+	#	beq s6, a3, one_step
+
+	#end_loop_test:
+	#	jmpi loop_test
+
+	#one_step:	
+	#		stw s4, CURR_STEP(zero)
+			#call update_gsa	
+			#call draw_gsa
+			#call wait
+	#		addi s4, s4, -1
+	#		jmpi loop_test
+
+
+
 	# algorithm of the game
 	addi t0, zero, 0
 	addi t1, zero, 0
@@ -51,32 +86,15 @@ main:
 	addi a1, zero, 0
 	addi a2, zero, 0
 	addi a3, zero, 0
-;	call reset_game
-	;call get_input
-	;add a0, zero, v0
-	;addi s4, zero, 0 # done
-	;addi s6, zero, 1
-	
-;call reset_game
-
-addi a0,zero,3
-addi a1,zero, 3
-call set_pixel
-addi a0,zero,6
-addi a1,zero, 3
-
-call set_pixel
-addi a0,zero,2
-addi a1,zero, 7
-call set_pixel
-
-addi t1, zero, RUN
-stw t1, CURR_STATE(zero)
-addi a0,zero, 8
-;	while:
-		;beq s4, s6, end_while # if done==1 then end
+	call reset_game
+	call get_input
+	add a0, zero, v0
+	addi s4, zero, 0 # done
+	addi s6, zero, 1
+	while:
+		beq s4, s6, end_while # if done==1 then end
 		addi a3, a0, 0
-	;	call select_action # a0 gets overwritten big time
+		call select_action # a0 gets overwritten big time
 		 #retrieve the og edgecapture 
 		addi a0, a3, 0
 		call update_state
@@ -85,14 +103,14 @@ addi a0,zero, 8
 		call update_gsa
 		call mask
 		call draw_gsa
-	;	call wait
-		;call decrement_step	
-		;add s4, v0, zero
-		;call get_input
-		;add a0, zero, v0
-	;	jmpi while
-	;end_while:
-break
+		call wait
+		call decrement_step	
+		add s4, v0, zero
+		call get_input
+		add a0, zero, v0
+		jmpi while
+	end_while:
+
 	jmpi main
 
 ; END:main
@@ -290,6 +308,8 @@ random_gsa:
 
 ; BEGIN:change_speed
 change_speed:
+	# increasing 1
+	# decreasing 2
 
 	srli a0, a0, 2
 
@@ -331,7 +351,23 @@ pause_game:
 	xori t0, t0, 1
 	stw t0, PAUSE(zero)
 
+
+#	beq t0, t2, run_it
+#	beq t0, t3, pause_it
+	
+	#end_pause:
+	#	stw t1, PAUSE(zero)
+
 	ret
+	
+	#run_it:
+	#	addi t1, zero, RUNNING
+	#	jmpi end_pause
+	#pause_it:
+	#	addi t1, zero, PAUSED
+	#	jmpi end_pause
+
+; END:pause_game
 
 ; BEGIN:change_steps
 change_steps:
@@ -567,6 +603,8 @@ update_state:
 		jmpi end_update_state
 
 	goto_init:
+		
+		;stw t1, CURR_STATE(zero)
 
 		add s4, s7, zero
 		call reset_game
@@ -612,6 +650,9 @@ select_action:
 	addi t6, zero, RAND
 	addi t7, zero, RUN
 
+
+;	addi s7, ra, 0
+
 	addi s1, ra,0
 
 	beq t0, t5, select_state_init
@@ -620,6 +661,8 @@ select_action:
 
 
 end_select_action:
+
+;	addi ra, s7, 0
 
 	addi ra,s1,0
 
@@ -659,7 +702,7 @@ end_select_action:
 		beq a0, t2, change_speed
 		beq a0, t3, change_speed
 		addi t4, zero, 8
-		beq a0, t4, reset_game
+		beq a0, t4, end_select_action
 		addi t4, zero, 16
 		beq a0, t4, random_gsa 
 
@@ -678,6 +721,13 @@ cell_fate:
 	or t1, t2, t5 # a0 == 3 || a0 == 2
 	and t4, a1, t1 # 1 if ALIVE && (a0 == 2 || a0 == 3)
 
+	;cmplti t6, a0, 2 # 1 if a0 < 2
+	;cmpgei t7, a0, 4 # 1 if a0 > 3
+	;or t1, t7, t6 # 1 if a0 < 2 || a0 > 3
+	;and t1, t1, a1 # 1 if ALIVE && (above line)
+	;xori t1, t1, 1
+	
+	;or t1, t1, t4
 	or v0, t4, t0 # outputs if the cell is alive or dead
 
 	ret
@@ -832,6 +882,9 @@ update_gsa:
 ; BEGIN:mask
 mask:
 	
+;	addi sp, sp, -4 # decrement stack pointer
+	;stw ra, 0(sp) # push the ra that goes back to main in the stack
+
 	addi s7, ra, 0
 
 	ldw t7, SEED(zero) # nb of the seed
@@ -854,9 +907,14 @@ mask:
 		and a0, v0, s2 # applying the mask
 		call set_gsa
 
+
 		addi s1, s1, 1
 		jmpi loop_mask
 	end_loop_mask:
+
+
+	;ldw ra, 0(sp) # putting the ra that goes back to main in place
+	;addi sp, sp, 4 # incrementing stack pointer
 
 	addi ra, s7, 0
 
@@ -985,6 +1043,9 @@ end_decrement_step:
 ; BEGIN:reset_game
 
 reset_game:
+
+;	addi sp,sp,-4
+	;stw ra, 0(sp)
 	
 	addi s7, ra, 0
 	call clear_leds
@@ -1022,12 +1083,17 @@ reset_game:
 		addi a1, t6, 0
 		call set_gsa
 
+
 		addi t6, t6, 1
 		jmpi loop_set_gsa0
 	end_set_gsa0:
 
+
 	addi t1, zero, MIN_SPEED
 	stw t1, SPEED(zero) # speed is set to 1
+
+	;ldw ra, 0(sp)
+	;addi sp,sp,4
 
 	addi ra, s7, 0
 
@@ -1155,3 +1221,4 @@ MASKS:
     .word mask2
     .word mask3
     .word mask4
+
