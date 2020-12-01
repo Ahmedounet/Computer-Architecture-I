@@ -495,6 +495,9 @@ update_state:
 	goto_run:
 		stw t3, CURR_STATE(zero)
 
+		addi t0,zero, RUNNING
+		stw t0,PAUSE(zero)
+
 		jmpi end_update_state
 
 	goto_init:
@@ -544,8 +547,6 @@ select_action:
 	addi t5, zero, INIT
 	addi t6, zero, RAND
 	addi t7, zero, RUN
-
-
 ;	addi s7, ra, 0
 
 	addi s1, ra,0

@@ -317,140 +317,69 @@ pause_game:
 	xori t0, t0, 1
 	stw t0, PAUSE(zero)
 
-
-#	beq t0, t2, run_it
-#	beq t0, t3, pause_it
-	
-	#end_pause:
-	#	stw t1, PAUSE(zero)
-
 	ret
-	
-	#run_it:
-	#	addi t1, zero, RUNNING
-	#	jmpi end_pause
-	#pause_it:
-	#	addi t1, zero, PAUSED
-	#	jmpi end_pause
+
 
 ; END:pause_game
 
 ; BEGIN:change_steps
 change_steps:
 
-	srli a0, a0, 2
-	andi a2, a0, 1
-
-	srli a0, a0, 1
-	andi a1, a0, 1
-
-	srli a0, a0, 1
-	andi a0, a0, 1
-
-	addi t1, zero, 0
-	addi t2, zero, 0
-	addi t3, zero, 0
-
 	ldw t0, CURR_STEP(zero)
 
-;	addi t7,zero,0 #carry set to 0
+	add t0,t0,a0
+	slli a1,a1,4
 
-
-	bne a0, zero, add_unit
-	check_tens:
-
-		bne a1, zero, add_tens
-	;	bne t7,zero, display_tens
-
-
-	check_hundreds:
-		bne a2, zero, add_hundreds
-	;	bne t7,zero, display_hundreds
+	add t0, t0,a1
 	
-
-	end_change_steps:
-		
-		andi t0, t0, 0xFFF
-		stw t0, CURR_STEP(zero)
-
-		ret
-
-	add_unit:
-		
-		addi t0, t0,1 
-
-		;display_unit:
-
-		;andi t3, t0, 0xF
-		;slli t4,t3,2	
-
-		;ldw t4, font_data(t4)
-
-		;addi t5, zero, 12
-
-		;stw t4, SEVEN_SEGS(t5) # units
-
-;		beq t3, zero, add_carry_tens #Check the carry	
-
-	;	addi t7, zero, 0
-
-		jmpi check_tens 
-
-	;add_carry_tens:
-		;	addi t7,zero, 1
-	;jmpi check_tens
-
-	add_tens:
-		addi t0,t0, 0x10
-
-		;display_tens:
-
-		;andi t3, t0, 0xF0
-		
-		;srli t3, t3, 4
-
-		#Chiffre recupere dans t3
-
-		;slli t4, t3, 2
-		;ldw t4, font_data(t4)
-		;addi t5,zero, 8
-		
-
-		;stw t4, SEVEN_SEGS(t5) # hundreds
-
-
-		;beq t3, zero, add_carry_hundreds #Check the carry	
-
-		;addi t7, zero, 0
-
-		jmpi check_hundreds
-
-	;add_carry_hundreds:
-		;addi t7,zero, 1
-	;jmpi check_hundreds
-
-	add_hundreds:
-		addi t0,t0, 0x100
-
-	;	display_hundreds:
-
-		;add t6, t0, zero
-		
-		;andi t3, t6, 0xF00
-		;srli t3, t3, 8
-
-		#Chiffre recupere dans t3
-
-		;slli t4, t3, 2
-		;ldw t4, font_data(t4)
-		;addi t5,zero, 4 
-		
-		;stw t4, SEVEN_SEGS(t5) # hundreds
+	slli a2, a2, 8 
 	
-		jmpi end_change_steps
-	
-	
-		;jmpi display_hundreds
+	add t0,t0,a2
+
+	stw t0, CURR_STEP(zero)
+ret
+
+;	srli a0, a0, 2
+	;andi a2, a0, 1
+
+	;srli a0, a0, 1
+	;andi a1, a0, 1
+
+	;srli a0, a0, 1
+	;andi a0, a0, 1
+
+	;addi t1, zero, 0
+	;addi t2, zero, 0
+	;addi t3, zero, 0
+
+	;ldw t0, CURR_STEP(zero)
+
+	;bne a0, zero, add_unit
+	;check_tens:
+
+		;bne a1, zero, add_tens
+
+	;check_hundreds:
+		;bne a2, zero, add_hundreds
+
+	;end_change_steps:
+		
+		;andi t0, t0, 0xFFF
+		;stw t0, CURR_STEP(zero)
+		;ret
+
+	;add_unit:
+		
+		;addi t0, t0,1 
+		;jmpi check_tens 
+
+	;add_tens:
+		;addi t0,t0, 0x10
+		;jmpi check_hundreds
+
+	;add_hundreds:
+		;addi t0,t0, 0x100
+		;jmpi end_change_steps
 	
 ; END:change_steps
 
@@ -566,6 +495,9 @@ update_state:
 	goto_run:
 		stw t3, CURR_STATE(zero)
 
+		addi t0,zero, RUN
+		stw t0,PAUSE(zero)
+
 		jmpi end_update_state
 
 	goto_init:
@@ -615,8 +547,6 @@ select_action:
 	addi t5, zero, INIT
 	addi t6, zero, RAND
 	addi t7, zero, RUN
-
-
 ;	addi s7, ra, 0
 
 	addi s1, ra,0
