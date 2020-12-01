@@ -28,6 +28,15 @@
     .equ PAUSED, 0x00
     .equ RUNNING, 0x01
 
+
+loop_test:
+
+addi a0,zero,16
+
+srli a1, a0,4
+
+jmpi loop_test
+
 addi a0,zero,1
 addi a1, zero, 5
 
@@ -109,8 +118,6 @@ end_set_gsa0:
 addi t2,zero,1
 
 stw t2,PAUSE(zero)
-
-
 
 
 main:

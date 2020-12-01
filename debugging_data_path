@@ -28,6 +28,15 @@
     .equ PAUSED, 0x00
     .equ RUNNING, 0x01
 
+
+loop_test:
+
+addi a0,zero,8
+
+srli a1, a0,3
+
+jmpi loop_test
+
 addi a0,zero,1
 addi a1, zero, 5
 

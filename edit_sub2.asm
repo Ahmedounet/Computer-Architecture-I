@@ -377,6 +377,13 @@ addi ra, s7, 0
 		addi t2,zero,0
 		addi t5,zero,8
 		add t7, zero,t6
+
+		ldw t1, SEED(zero)
+		addi t7, zero, N_SEEDS
+		bge t1, t7, rand_seed
+		addi t1, t1, 1
+		stw t1, SEED(zero)
+
 	loop_inc_seed_gsa:
 
 		add t7, t6, t2
@@ -524,30 +531,35 @@ end_select_action:
 
 	select_state_init:
 
-		srli a0, a0, 2
-		andi a2, a0, 1
-
-		srli a0, a0, 1
-		andi a1, a0, 1
-
-		srli a0, a0, 1
-		andi a0, a0, 1
-
 		andi t2,a0, 0x10000 ;MSB=16
 		addi t4, zero, 16
 
-		srli a2,t2,4
+		addi a2,zero,0
 		addi a1,zero,0
-		addi a0,zero,0
-		
+		addi t7, zero, a0
+		srli a0,t2,4
 		beq t2, t4, change_steps
+		addi a0, zero, t7
+
 
 		andi t2,a0, 0x1000	;MSB= 8
 		addi t4, zero, 8
+		addi a2,zero,0
+		srli a1,t2,3
+		addi t7, zero, a0
+		addi a0,zero,0
 		beq t2, t4, change_steps
-	
+		addi a0, zero, t7
+
+
 		andi t2,a0, 0x100  ;MSB=4
+		srli a2,t2,2
+		addi a1,zero,0
+		addi t7,zero,a0
+		addi a0,zero,0
 		beq t2, t3, change_steps
+		addi a0, zero, t7
+
 
 		andi t2,a0, 0x1  ;MSB=1
 		beq t2, t1, increment_seed
@@ -556,16 +568,33 @@ end_select_action:
 
 	select_state_rand:
 
-		andi t2,a0, 0x10000
+		andi t2,a0, 0x10000 ;MSB=16
 		addi t4, zero, 16
+		addi a2,zero,0
+		addi a1,zero,0
+		addi t7, zero, a0
+		srli a0,t2,4
 		beq t2, t4, change_steps
+		addi a0, zero, t7
 
-		andi t2,a0, 0x1000	
+
+		andi t2,a0, 0x1000	;MSB= 8
 		addi t4, zero, 8
+		addi a2,zero,0
+		srli a1,t2,3
+		addi t7, zero, a0
+		addi a0,zero,0
 		beq t2, t4, change_steps
-	
-		andi t2,a0, 0x100
+		addi a0, zero, t7
+
+
+		andi t2,a0, 0x100  ;MSB=4
+		srli a2,t2,2
+		addi a1,zero,0
+		addi t7,zero,a0
+		addi a0,zero,0
 		beq t2, t3, change_steps
+		addi a0, zero, t7
 
 		andi t2,a0, 0x1
 		beq t2, t1, increment_seed
