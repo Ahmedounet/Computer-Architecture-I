@@ -549,16 +549,16 @@ end_select_action:
 		add t7, zero, a0
 		addi a0,zero,0
 		beq t2, t4, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
 		andi t2,a0, 4  ;MSB=4
 		srli a2,t2,2
 		addi a1,zero,0
-		addi t7,zero,a0
+		add t7,zero,a0
 		addi a0,zero,0
 		beq t2, t3, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
 		andi t2,a0, 1  ;MSB=1
@@ -572,29 +572,29 @@ end_select_action:
 		addi t4, zero, 16
 		addi a2,zero,0
 		addi a1,zero,0
-		addi t7, zero, a0
+		add t7, zero, a0
 		srli a0,t2,4
 		beq t2, t4, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
 		andi t2,a0, 8	;MSB= 8
 		addi t4, zero, 8
 		addi a2,zero,0
 		srli a1,t2,3
-		addi t7, zero, a0
+		add t7, zero, a0
 		addi a0,zero,0
 		beq t2, t4, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 
 		andi t2,a0, 4  ;MSB=4
 		srli a2,t2,2
 		addi a1,zero,0
-		addi t7,zero,a0
+		add t7,zero,a0
 		addi a0,zero,0
 		beq t2, t3, change_steps
-		addi a0, zero, t7
+		add a0, zero, t7
 
 		andi t2,a0, 1
 		beq t2, t1, increment_seed
@@ -607,16 +607,23 @@ end_select_action:
 		addi t4, zero, 16
 		beq t5, t4, random_gsa 
 
-		andi t5,a0, 8
-		addi t4, zero, 8
-		beq t5, t4, reset_game
+	;	andi t5,a0, 8
+		;addi t4, zero, 8
+		;beq t5, t4, reset_game
 		
 		andi t5,a0, 4
+		add t7, a0,zero
+		srli a0, a0, 2
 		beq t5, t3, change_speed
-		
+		add a0,t7, zero		
+
 		andi t5,a0, 2
+		add t7, a0,zero
+		srli a0, a0, 2
 		beq t5, t2, change_speed
-		
+		add a0,t7, zero		
+
+
 		andi t5,a0, 1
 		beq t5, t1, pause_game
 

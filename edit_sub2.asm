@@ -607,16 +607,23 @@ end_select_action:
 		addi t4, zero, 16
 		beq t5, t4, random_gsa 
 
-		andi t5,a0, 8
-		addi t4, zero, 8
-		beq t5, t4, reset_game
+	;	andi t5,a0, 8
+		;addi t4, zero, 8
+		;beq t5, t4, reset_game
 		
 		andi t5,a0, 4
+		add t7, a0,zero
+		srli a0, a0, 2
 		beq t5, t3, change_speed
-		
+		add a0,t7, zero		
+
 		andi t5,a0, 2
+		add t7, a0,zero
+		srli a0, a0, 2
 		beq t5, t2, change_speed
-		
+		add a0,t7, zero		
+
+
 		andi t5,a0, 1
 		beq t5, t1, pause_game
 
