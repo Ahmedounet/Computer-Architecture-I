@@ -277,7 +277,7 @@ change_speed:
 	# increasing 1
 	# decreasing 2
 
-	srli a0, a0, 2
+;	srli a0, a0, 2
 
 	ldw t0, SPEED(zero)
 	addi t1, zero,1
@@ -339,47 +339,7 @@ change_steps:
 	stw t0, CURR_STEP(zero)
 ret
 
-;	srli a0, a0, 2
-	;andi a2, a0, 1
 
-	;srli a0, a0, 1
-	;andi a1, a0, 1
-
-	;srli a0, a0, 1
-	;andi a0, a0, 1
-
-	;addi t1, zero, 0
-	;addi t2, zero, 0
-	;addi t3, zero, 0
-
-	;ldw t0, CURR_STEP(zero)
-
-	;bne a0, zero, add_unit
-	;check_tens:
-
-		;bne a1, zero, add_tens
-
-	;check_hundreds:
-		;bne a2, zero, add_hundreds
-
-	;end_change_steps:
-		
-		;andi t0, t0, 0xFFF
-		;stw t0, CURR_STEP(zero)
-		;ret
-
-	;add_unit:
-		
-		;addi t0, t0,1 
-		;jmpi check_tens 
-
-	;add_tens:
-		;addi t0,t0, 0x10
-		;jmpi check_hundreds
-
-	;add_hundreds:
-		;addi t0,t0, 0x100
-		;jmpi end_change_steps
 	
 ; END:change_steps
 
@@ -547,14 +507,12 @@ select_action:
 	addi t5, zero, INIT
 	addi t6, zero, RAND
 	addi t7, zero, RUN
-;	addi s7, ra, 0
 
 	addi s1, ra,0
 
 	beq t0, t5, select_state_init
 	beq t0, t6, select_state_rand
 	beq t0, t7, select_state_run
-
 
 end_select_action:
 
@@ -566,43 +524,75 @@ end_select_action:
 
 	select_state_init:
 
-		beq a0, t1, increment_seed
+		srli a0, a0, 2
+		andi a2, a0, 1
 
-		beq a0, t2, pause_game
+		srli a0, a0, 1
+		andi a1, a0, 1
 
-		beq a0, t3, change_steps
-		addi t4, zero, 8
-		beq a0, t4, change_steps
+		srli a0, a0, 1
+		andi a0, a0, 1
+
+		andi t2,a0, 0x10000 ;MSB=16
 		addi t4, zero, 16
-		beq a0, t4, change_steps
+
+		srli a2,t2,4
+		addi a1,zero,0
+		addi a0,zero,0
+		
+		beq t2, t4, change_steps
+
+		andi t2,a0, 0x1000	;MSB= 8
+		addi t4, zero, 8
+		beq t2, t4, change_steps
+	
+		andi t2,a0, 0x100  ;MSB=4
+		beq t2, t3, change_steps
+
+		andi t2,a0, 0x1  ;MSB=1
+		beq t2, t1, increment_seed
 
 		jmpi end_select_action
 
 	select_state_rand:
 
-		beq a0, t1, increment_seed
-
-		beq a1, t2, pause_game
-
-		beq a0, t3, change_steps
-		addi t4, zero, 8
-		beq a0, t4, change_steps
+		andi t2,a0, 0x10000
 		addi t4, zero, 16
-		beq a0, t4, change_steps
+		beq t2, t4, change_steps
+
+		andi t2,a0, 0x1000	
+		addi t4, zero, 8
+		beq t2, t4, change_steps
+	
+		andi t2,a0, 0x100
+		beq t2, t3, change_steps
+
+		andi t2,a0, 0x1
+		beq t2, t1, increment_seed
 
 		jmpi end_select_action
 
 	select_state_run:
 
-		beq a0, t1, pause_game
-		beq a0, t2, change_speed
-		beq a0, t3, change_speed
-		addi t4, zero, 8
-		beq a0, t4, reset_game
+		andi t5,a0, 0x10000
 		addi t4, zero, 16
-		beq a0, t4, random_gsa 
+		beq t5, t4, random_gsa 
+
+		andi t5,a0, 0x1000
+		addi t4, zero, 8
+		beq t5, t4, reset_game
+		
+		andi t5,a0, 0x100
+		beq t5, t3, change_speed
+		
+		andi t5,a0, 0x10
+		beq t5, t2, change_speed
+		
+		andi t5,a0, 0x1
+		beq t5, t1, pause_game
 
 		jmpi end_select_action
+
 ; END:select_action
 
 ; BEGIN:cell_fate
@@ -617,13 +607,6 @@ cell_fate:
 	or t1, t2, t5 # a0 == 3 || a0 == 2
 	and t4, a1, t1 # 1 if ALIVE && (a0 == 2 || a0 == 3)
 
-	;cmplti t6, a0, 2 # 1 if a0 < 2
-	;cmpgei t7, a0, 4 # 1 if a0 > 3
-	;or t1, t7, t6 # 1 if a0 < 2 || a0 > 3
-	;and t1, t1, a1 # 1 if ALIVE && (above line)
-	;xori t1, t1, 1
-	
-	;or t1, t1, t4
 	or v0, t4, t0 # outputs if the cell is alive or dead
 
 	ret
@@ -807,10 +790,6 @@ mask:
 		addi s1, s1, 1
 		jmpi loop_mask
 	end_loop_mask:
-
-
-	;ldw ra, 0(sp) # putting the ra that goes back to main in place
-	;addi sp, sp, 4 # incrementing stack pointer
 
 	addi ra, s7, 0
 

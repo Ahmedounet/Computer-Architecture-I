@@ -28,7 +28,6 @@
     .equ PAUSED, 0x00
     .equ RUNNING, 0x01
 
-; BEGIN:main
 main:
 
 	# algorithm of the game
@@ -79,94 +78,92 @@ main:
 
 	jmpi main
 
-; END:main
-
-; BEGIN:clear_leds
+;BEGIN:clear_leds
 clear_leds:
 
-addi t1, zero ,4
+	addi t1, zero, 0
+	addi t2, zero, 12 ;Upper limit size of leds array! 
 
-addi t2, zero, 8
-stw zero ,LEDS(zero)
+	addi t3, zero, 0x00
 
-stw zero ,LEDS(t1)
+	slli t4,t3,8
+	slli t5,t3,16
+	slli t6,t3,24
 
-stw zero,LEDS (t2)
+
+	or t3,t3,t4
+	or t3,t3,t5
+	or t3,t3,t6
 
 
-end_clear_leds:
+	loop_clear:
+		;stw zero,LEDS(t1)
 
-ret
+		stw  t3,LEDS(t1)
+	;	slli LEDS(t1),LEDS(t1) , 1
+		
+		addi t1,t1,4
+		bne t1,t2,loop_clear
+	ret
 
-; END:clear_leds
+;END:clear_leds
 
-; BEGIN:set_pixel
+;BEGIN:set_pixel
 set_pixel:
 
 
 add t2,zero,a0
-;    add t2,t2,a0
-    addi t3,zero,0
-    addi t4,zero,1
-    addi t5, zero, 8
-    addi t6, zero, 4
+;	add t2,t2,a0
+	addi t3,zero,0
+	addi t4,zero,1
+	addi t5, zero, 8
+	addi t6, zero, 4
 
-    loop_position_LED_ARRAY:
+	loop_position_LED_ARRAY:
+	
+		beq t2,t5,position_LED_ARRAY_incrementation
+		
+		beq t2,t6,position_LED_ARRAY_incrementation
 
-        beq t2,zero, get_out_of_the_loop
-        beq t2,t5,position_LED_ARRAY_incrementation
+	decrement_loop_position_LED_ARRAY:
+		sub t2,t2 ,t4  ; t3 is used to know in which led to display!
+		
+		bne t2,zero, loop_position_LED_ARRAY
 
-        beq t2,t6,position_LED_ARRAY_incrementation
+	slli t0,a0,3
+	add t0,t0, a1
+	
+	addi t1, zero,1 
+	sll t1,t1,t0
 
-    decrement_loop_position_LED_ARRAY:
-        sub t2,t2 ,t4  ; t3 is used to know in which led to display!
+	ldw t7,LEDS(t3)
 
-        bne t2,zero, loop_position_LED_ARRAY
+	or t1,t1,t7
 
-get_out_of_the_loop:
-    slli t0,a0,3
-    add t0,t0, a1
+	stw  t1,LEDS(t3)
 
-    addi t1, zero,1 
-    sll t1,t1,t0
+	ret 
 
-    ldw t7,LEDS(t3)
+	position_LED_ARRAY_incrementation:
+		addi t3,t3,4
+		jmpi decrement_loop_position_LED_ARRAY
 
-    or t1,t1,t7
+;END:set_pixel
 
-    stw  t1,LEDS(t3)
-
-    ret 
-
-    position_LED_ARRAY_incrementation:
-        addi t3,t3,4
-        jmpi decrement_loop_position_LED_ARRAY
-
-; END:set_pixel
-
-; BEGIN:wait
+;BEGIN:wait
 wait:
+	addi t0, zero, 1
+	slli t0, t0, 19
 
-    addi t0, zero, 1
+	addi t1, zero, 1
 
-    ldw t2, SPEED(zero)
 
-    addi t2, t2, -1
+	loop_wait:
+		sub t0, t0, t1
+		bne t0, zero, loop_wait
 
-    addi t3, zero, 22
-
-    sub t4, t3,t2
-
-    sll t0, t0, t4
-
-    addi t1, zero, 1
-
-    loop_wait:
-        sub t0, t0, t1
-        bne t0, zero, loop_wait
-
-    ret
-; END:wait
+	ret
+;END:wait
 
 ; BEGIN:get_gsa
 get_gsa:
@@ -272,7 +269,7 @@ random_gsa:
 	ret
 ; END:random_gsa
 
-; BEGIN:change_speed
+;BEGIN:change_speed
 change_speed:
 	# increasing 1
 	# decreasing 2
@@ -303,10 +300,10 @@ change_speed:
 		sub t0, t0, t1
 		jmpi end_change_speed
 
-; END:change_speed
+;END:change_speed
 
 
-; BEGIN:pause_game
+;BEGIN:pause_game
 pause_game:
 
 	ldw t0, PAUSE(zero) ; We get the current pause state
@@ -317,33 +314,144 @@ pause_game:
 	xori t0, t0, 1
 	stw t0, PAUSE(zero)
 
+
+#	beq t0, t2, run_it
+#	beq t0, t3, pause_it
+	
+	#end_pause:
+	#	stw t1, PAUSE(zero)
+
 	ret
+	
+	#run_it:
+	#	addi t1, zero, RUNNING
+	#	jmpi end_pause
+	#pause_it:
+	#	addi t1, zero, PAUSED
+	#	jmpi end_pause
 
+;END:pause_game
 
-; END:pause_game
-
-; BEGIN:change_steps
+;BEGIN:change_steps
 change_steps:
+
+	srli a0, a0, 2
+	andi a2, a0, 1
+
+	srli a0, a0, 1
+	andi a1, a0, 1
+
+	srli a0, a0, 1
+	andi a0, a0, 1
+
+	addi t1, zero, 0
+	addi t2, zero, 0
+	addi t3, zero, 0
 
 	ldw t0, CURR_STEP(zero)
 
-	add t0,t0,a0
-	slli a1,a1,4
+;	addi t7,zero,0 #carry set to 0
 
-	add t0, t0,a1
+
+	bne a0, zero, add_unit
+	check_tens:
+
+		bne a1, zero, add_tens
+	;	bne t7,zero, display_tens
+
+
+	check_hundreds:
+		bne a2, zero, add_hundreds
+	;	bne t7,zero, display_hundreds
 	
-	slli a2, a2, 8 
+
+	end_change_steps:
+		
+		andi t0, t0, 0xFFF
+		stw t0, CURR_STEP(zero)
+
+		ret
+
+	add_unit:
+		
+		addi t0, t0,1 
+
+		;display_unit:
+
+		;andi t3, t0, 0xF
+		;slli t4,t3,2	
+
+		;ldw t4, font_data(t4)
+
+		;addi t5, zero, 12
+
+		;stw t4, SEVEN_SEGS(t5) # units
+
+;		beq t3, zero, add_carry_tens #Check the carry	
+
+	;	addi t7, zero, 0
+
+		jmpi check_tens 
+
+	;add_carry_tens:
+		;	addi t7,zero, 1
+	;jmpi check_tens
+
+	add_tens:
+		addi t0,t0, 0x10
+
+		;display_tens:
+
+		;andi t3, t0, 0xF0
+		
+		;srli t3, t3, 4
+
+		#Chiffre récupéré dans t3
+
+		;slli t4, t3, 2
+		;ldw t4, font_data(t4)
+		;addi t5,zero, 8
+		
+
+		;stw t4, SEVEN_SEGS(t5) # hundreds
+
+
+		;beq t3, zero, add_carry_hundreds #Check the carry	
+
+		;addi t7, zero, 0
+
+		jmpi check_hundreds
+
+	;add_carry_hundreds:
+		;addi t7,zero, 1
+	;jmpi check_hundreds
+
+	add_hundreds:
+		addi t0,t0, 0x100
+
+	;	display_hundreds:
+
+		;add t6, t0, zero
+		
+		;andi t3, t6, 0xF00
+		;srli t3, t3, 8
+
+		#Chiffre récupéré dans t3
+
+		;slli t4, t3, 2
+		;ldw t4, font_data(t4)
+		;addi t5,zero, 4 
+		
+		;stw t4, SEVEN_SEGS(t5) # hundreds
 	
-	add t0,t0,a2
-
-	stw t0, CURR_STEP(zero)
-ret
-
-
+		jmpi end_change_steps
 	
-; END:change_steps
+	
+		;jmpi display_hundreds
+	
+;END:change_steps
 
-; BEGIN:increment_seed
+;BEGIN:increment_seed
 increment_seed:
 
 addi s7, ra, 0
@@ -402,9 +510,9 @@ addi ra, s7, 0
 	rand_seed:
 	call random_gsa
 		jmpi end_increment_seed
-; END:increment_seed
+;END:increment_seed
 
-; BEGIN:update_state
+;BEGIN:update_state
 
 update_state:
 
@@ -455,19 +563,16 @@ update_state:
 	goto_run:
 		stw t3, CURR_STATE(zero)
 
-		addi t0,zero, RUNNING
-		stw t0,PAUSE(zero)
-
 		jmpi end_update_state
 
 	goto_init:
 		
-		;stw t1, CURR_STATE(zero)
+		stw t1, CURR_STATE(zero)
 
-		add s4, s7, zero
+		add t7,s7,zero
 		call reset_game
-		add s7, s4 ,zero
-		addi s4, zero, 1
+	
+		add s7, t7 ,zero
 
 		jmpi end_update_state
 
@@ -492,9 +597,9 @@ update_state:
 		beq a0, t7, end_update_state # button4
 		jmpi end_update_state
 
-; END:update_state
+;END:update_state
 
-; BEGIN:select_action
+;BEGIN:select_action
 
 select_action:
 
@@ -508,11 +613,15 @@ select_action:
 	addi t6, zero, RAND
 	addi t7, zero, RUN
 
+
+;	addi s7, ra, 0
+
 	addi s1, ra,0
 
 	beq t0, t5, select_state_init
 	beq t0, t6, select_state_rand
 	beq t0, t7, select_state_run
+
 
 end_select_action:
 
@@ -524,76 +633,44 @@ end_select_action:
 
 	select_state_init:
 
-		srli a0, a0, 2
-		andi a2, a0, 1
+		beq a0, t1, increment_seed
 
-		srli a0, a0, 1
-		andi a1, a0, 1
+		beq a0, t2, pause_game
 
-		srli a0, a0, 1
-		andi a0, a0, 1
-
-		andi t2,a0, 0x10000 ;MSB=16
-		addi t4, zero, 16
-
-		srli a2,t2,
-		addi a1,zero,0
-		addi a0,zero,0
-		
-		beq t2, t4, change_steps
-
-		andi t2,a0, 0x1000	;MSB= 8
+		beq a0, t3, change_steps
 		addi t4, zero, 8
-		beq t2, t4, change_steps
-	
-		andi t2,a0, 0x100  ;MSB=4
-		beq t2, t3, change_steps
-
-		andi t2,a0, 0x1  ;MSB=1
-		beq t2, t1, increment_seed
+		beq a0, t4, change_steps
+		addi t4, zero, 16
+		beq a0, t4, change_steps
 
 		jmpi end_select_action
 
 	select_state_rand:
 
-		andi t2,a0, 0x10000
-		addi t4, zero, 16
-		beq t2, t4, change_steps
+		beq a0, t1, increment_seed
 
-		andi t2,a0, 0x1000	
+		beq a1, t2, pause_game
+
+		beq a0, t3, change_steps
 		addi t4, zero, 8
-		beq t2, t4, change_steps
-	
-		andi t2,a0, 0x100
-		beq t2, t3, change_steps
-
-		andi t2,a0, 0x1
-		beq t2, t1, increment_seed
+		beq a0, t4, change_steps
+		addi t4, zero, 16
+		beq a0, t4, change_steps
 
 		jmpi end_select_action
 
 	select_state_run:
 
-		andi t5,a0, 0x10000
-		addi t4, zero, 16
-		beq t5, t4, random_gsa 
-
-		andi t5,a0, 0x1000
+		beq a0, t1, pause_game
+		beq a0, t2, change_speed
+		beq a0, t3, change_speed
 		addi t4, zero, 8
-		beq t5, t4, reset_game
-		
-		andi t5,a0, 0x100
-		beq t5, t3, change_speed
-		
-		andi t5,a0, 0x10
-		beq t5, t2, change_speed
-		
-		andi t5,a0, 0x1
-		beq t5, t1, pause_game
+		beq a0, t4, reset_game
+		addi t4, zero, 16
+		beq a0, t4, random_gsa 
 
 		jmpi end_select_action
-
-; END:select_action
+;END:select_action
 
 ; BEGIN:cell_fate
 cell_fate:
@@ -607,6 +684,13 @@ cell_fate:
 	or t1, t2, t5 # a0 == 3 || a0 == 2
 	and t4, a1, t1 # 1 if ALIVE && (a0 == 2 || a0 == 3)
 
+	;cmplti t6, a0, 2 # 1 if a0 < 2
+	;cmpgei t7, a0, 4 # 1 if a0 > 3
+	;or t1, t7, t6 # 1 if a0 < 2 || a0 > 3
+	;and t1, t1, a1 # 1 if ALIVE && (above line)
+	;xori t1, t1, 1
+	
+	;or t1, t1, t4
 	or v0, t4, t0 # outputs if the cell is alive or dead
 
 	ret
@@ -791,12 +875,16 @@ mask:
 		jmpi loop_mask
 	end_loop_mask:
 
+
+	;ldw ra, 0(sp) # putting the ra that goes back to main in place
+	;addi sp, sp, 4 # incrementing stack pointer
+
 	addi ra, s7, 0
 
 	ret
 ; END:mask
 
-; BEGIN:get_input
+;BEGIN:get_input
 get_input:
 
 
@@ -847,9 +935,9 @@ get_input:
 
         jmpi loop_bit_select
 
-; END:get_input
+;END:get_input
 
-; BEGIN:decrement_step
+;BEGIN:decrement_step
 
 decrement_step:
 
@@ -913,11 +1001,14 @@ end_decrement_step:
 
 		jmpi show_the_steps
  
-; END:decrement_step
+;END:decrement_step
 
-; BEGIN:reset_game
+;BEGIN:reset_game
 
 reset_game:
+
+;	addi sp,sp,-4
+	;stw ra, 0(sp)
 	
 	addi s7, ra, 0
 	call clear_leds
@@ -943,8 +1034,6 @@ reset_game:
 
 	stw zero, PAUSE(zero) # puts the game in pause mode
 	stw zero, SEED(zero) # seed 0 is selected
-
-	call decrement_step
 		
 	addi t5, zero, N_GSA_LINES
 	addi t6, zero, 0
@@ -963,15 +1052,13 @@ reset_game:
 	end_set_gsa0:
 
 
-	addi t1, zero, MIN_SPEED
+	addi t1, zero, 1
 	stw t1, SPEED(zero) # speed is set to 1
-
-	call draw_gsa
 
 	addi ra, s7, 0
 
 	ret
-; END:reset_game
+;END:reset_game
 
 font_data:
     .word 0xFC ; 0
