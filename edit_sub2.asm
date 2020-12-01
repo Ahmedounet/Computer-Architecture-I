@@ -65,11 +65,10 @@ main:
 		addi a0, a3, 0
 		call update_state
 		#add s7, zero, a0 #saving a0 from the callees needed?
-		
 		call update_gsa
 		call mask
 		call draw_gsa
-	;	call wait
+		call wait
 		call decrement_step	
 		add s4, v0, zero
 		call get_input

@@ -69,7 +69,7 @@ main:
 		call update_gsa
 		call mask
 		call draw_gsa
-	;	call wait
+		call wait
 		call decrement_step	
 		add s4, v0, zero
 		call get_input
@@ -199,7 +199,7 @@ draw_gsa:
 loopa:
 	beq t2, t1, enda # if t2 == 3 we are done
 	andi t3, t3, 0 # loopb increment
-	addi t4, t4, 8
+	addi t4, zero, 8
 	
 	addi t5, zero, 0 
 	slli s1, t2, 2
