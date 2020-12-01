@@ -69,7 +69,7 @@ main:
 		call update_gsa
 		call mask
 		call draw_gsa
-		call wait
+	;	call wait
 		call decrement_step	
 		add s4, v0, zero
 		call get_input
