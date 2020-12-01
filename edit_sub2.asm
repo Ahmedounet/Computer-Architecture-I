@@ -68,7 +68,7 @@ main:
 		call update_gsa
 		call mask
 		call draw_gsa
-		call wait
+	;	call wait
 		call decrement_step	
 		add s4, v0, zero
 		call get_input
@@ -367,7 +367,9 @@ addi ra, s7, 0
 		ldw t1, SEED(zero)
 		addi t1, t1, 1
 		stw t1, SEED(zero)
-
+		addi t0, zero, N_SEEDS
+		bge t1, t0, rand_seed
+		
 		slli t1, t1 ,2
 
 		ldw t6, SEEDS(t1)
@@ -376,12 +378,6 @@ addi ra, s7, 0
 		addi t2,zero,0
 		addi t5,zero,8
 		add t7, zero,t6
-
-		ldw t1, SEED(zero)
-		addi t7, zero, N_SEEDS
-		bge t1, t7, rand_seed
-		addi t1, t1, 1
-		stw t1, SEED(zero)
 
 	loop_inc_seed_gsa:
 
