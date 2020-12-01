@@ -68,7 +68,7 @@ main:
 		call update_gsa
 		call mask
 		call draw_gsa
-	;	call wait
+		call wait
 		call decrement_step	
 		add s4, v0, zero
 		call get_input
@@ -273,10 +273,6 @@ random_gsa:
 
 ; BEGIN:change_speed
 change_speed:
-	# increasing 1
-	# decreasing 2
-
-;	srli a0, a0, 2
 
 	ldw t0, SPEED(zero)
 	addi t1, zero,1
@@ -464,7 +460,7 @@ update_state:
 
 	goto_init:
 		
-		;stw t1, CURR_STATE(zero)
+
 
 		add s4, s7, zero
 		call reset_game
@@ -518,7 +514,6 @@ select_action:
 
 end_select_action:
 
-;	addi ra, s7, 0
 
 	addi ra,s1,0
 
@@ -601,10 +596,6 @@ end_select_action:
 		andi t5,a0, 16
 		addi t4, zero, 16
 		beq t5, t4, random_gsa 
-
-	;	andi t5,a0, 8
-		;addi t4, zero, 8
-		;beq t5, t4, reset_game
 		
 		andi t5,a0, 4
 		add t7, a0,zero
@@ -789,36 +780,40 @@ update_gsa:
     ret
 ; END:update_gsa
 
-; BEGIN:mask
 mask:
 	
-;	addi sp, sp, -4 # decrement stack pointer
-	;stw ra, 0(sp) # push the ra that goes back to main in the stack
-
 	addi s7, ra, 0
 
 	ldw t7, SEED(zero) # nb of the seed
 	slli t7, t7, 2
-	ldw s3, MASKS(t7) # address of the corresponding mask
+	ldw t3, MASKS(t7) # address of the corresponding mask
 
-	addi s0, zero, N_GSA_LINES
-	addi s1, zero, 0
+	addi t4, zero, N_GSA_LINES
+	addi t5, zero, 0
 
 	loop_mask:
-		beq s1, s0, end_loop_mask
+		beq t5, t4, end_loop_mask
 
-		add a0, zero, s1 # line y coordinate
-		call get_gsa
-			
-		add a1, zero, a0 # line y coordinate
-		slli s2, s1, 2
-		add s2, s2, s3
-		ldw s2, 0(s2) # current mask line
-		and a0, v0, s2 # applying the mask
-		call set_gsa
+		ldw t0, GSA_ID(zero)
+		slli t0, t0, 5
+		slli t1, t5, 2
+		add t2, t0, t1
+		ldw t7, GSA0(t2)
+
+		slli t6, t5, 2
+		add t6, t6, t3
+		ldw t6, 0(t6) # current mask line
+		and t7, t7, t6 # applying the mask
 
 
-		addi s1, s1, 1
+		ldw t0, GSA_ID(zero)
+		slli t0, t0, 5
+		slli t1, t5, 2
+		add t2, t0, t1
+		stw t7, GSA0(t2)
+
+
+		addi t5, t5, 1
 		jmpi loop_mask
 	end_loop_mask:
 
